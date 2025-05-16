@@ -118,12 +118,24 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     document.body.classList.add('no-transition');
     
     // Remove all theme classes
-    document.body.classList.remove(...themes.map(theme => theme.className.split(' ')).flat());
+    const themeClasses = themes
+      .map(theme => theme.className ? theme.className.split(' ') : [])
+      .flat()
+      .filter(className => className !== ''); // Filter out empty strings
+    
+    themeClasses.forEach(className => {
+      if (className) {
+        document.body.classList.remove(className);
+      }
+    });
     
     // Add new theme class
     const theme = themes.find(t => t.id === currentTheme);
     if (theme && theme.className) {
-      document.body.classList.add(...theme.className.split(' '));
+      const classNames = theme.className.split(' ').filter(name => name !== '');
+      if (classNames.length > 0) {
+        document.body.classList.add(...classNames);
+      }
     }
     
     // Save theme to localStorage
