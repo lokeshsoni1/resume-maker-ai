@@ -7,9 +7,9 @@ import {
   Copy,
   Edit,
   RefreshCw,
-  Search,
   ZoomIn,
   ZoomOut,
+  Search,
   Sparkles,
   Share2
 } from 'lucide-react';
@@ -30,8 +30,10 @@ export const ResumePreview = () => {
       description: "Press Ctrl+P (or Cmd+P on Mac) and select 'Save as PDF' to download your resume.",
     });
     
-    // Open print dialog
-    window.print();
+    // Open print dialog with only resume content visible
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
   
   const handleCopyText = () => {
@@ -211,7 +213,7 @@ export const ResumePreview = () => {
                       </div>
                       
                       {/* Online Profiles */}
-                      {(formValues.contactInformation.linkedin || formValues.contactInformation.github || formValues.contactInformation.portfolio) && (
+                      {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6">
                           <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
                             Online Profiles
@@ -225,11 +227,6 @@ export const ResumePreview = () => {
                             {formValues.contactInformation.github && (
                               <li>
                                 <span className="font-semibold">GitHub:</span> {formValues.contactInformation.github}
-                              </li>
-                            )}
-                            {formValues.contactInformation.portfolio && (
-                              <li>
-                                <span className="font-semibold">Portfolio:</span> {formValues.contactInformation.portfolio}
                               </li>
                             )}
                           </ul>
@@ -447,7 +444,7 @@ export const ResumePreview = () => {
                       </div>
                       
                       {/* Online Profiles */}
-                      {(formValues.contactInformation.linkedin || formValues.contactInformation.github || formValues.contactInformation.portfolio) && (
+                      {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6 resume-section">
                           <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
                             Online Profiles
@@ -458,9 +455,6 @@ export const ResumePreview = () => {
                             )}
                             {formValues.contactInformation.github && (
                               <li>GitHub: {formValues.contactInformation.github}</li>
-                            )}
-                            {formValues.contactInformation.portfolio && (
-                              <li>Portfolio: {formValues.contactInformation.portfolio}</li>
                             )}
                           </ul>
                         </div>

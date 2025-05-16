@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Github, Linkedin, Twitter, Mail, ArrowUp } from 'lucide-react';
+import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 export const Footer = () => {
@@ -70,8 +70,8 @@ export const Footer = () => {
               
               <div className="flex items-center">
                 <Github className="h-5 w-5 mr-3 text-primary" />
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                  github.com/lokeshsoni
+                <a href="https://github.com/lokeshhsoni" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  github.com/lokeshhsoni
                 </a>
               </div>
               
@@ -79,7 +79,7 @@ export const Footer = () => {
                 <h3 className="text-lg font-semibold mb-3">Connect With Me</h3>
                 <div className="flex gap-4">
                   <a 
-                    href="https://linkedin.com" 
+                    href="https://www.linkedin.com/in/lokesh-soni-2b3b7034a/" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -87,20 +87,12 @@ export const Footer = () => {
                     <Linkedin className="h-5 w-5" />
                   </a>
                   <a 
-                    href="https://github.com" 
+                    href="https://github.com/lokeshhsoni" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
                   >
                     <Github className="h-5 w-5" />
-                  </a>
-                  <a 
-                    href="https://twitter.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Twitter className="h-5 w-5" />
                   </a>
                 </div>
               </div>
