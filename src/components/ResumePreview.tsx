@@ -11,16 +11,19 @@ import {
   ZoomOut,
   Search,
   Sparkles,
-  Share2
+  Share2,
+  Download
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
+import html2canvas from 'html2canvas';
 
 export const ResumePreview = () => {
   const { formValues, incrementDownloadCount, selectedTemplate } = useResume();
   const resumeRef = useRef<HTMLDivElement>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   const handleDownload = () => {
     incrementDownloadCount();
@@ -34,6 +37,63 @@ export const ResumePreview = () => {
     setTimeout(() => {
       window.print();
     }, 100);
+  };
+
+  const handleDownloadAsPng = async () => {
+    if (!resumeRef.current) return;
+    
+    try {
+      setIsDownloading(true);
+      incrementDownloadCount();
+      
+      toast({
+        title: "Generating Image",
+        description: "Please wait while we prepare your resume image...",
+      });
+
+      // Reset zoom for download
+      const originalZoom = zoomLevel;
+      setZoomLevel(100);
+      
+      // Wait for re-render
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Capture resume as canvas
+      const canvas = await html2canvas(resumeRef.current, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+      });
+      
+      // Convert to PNG
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = `${formValues.fullName.replace(/\s+/g, '-')}-Resume.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Reset zoom back
+      setZoomLevel(originalZoom);
+      
+      toast({
+        title: "Download Complete",
+        description: "Your resume has been downloaded as a PNG image.",
+      });
+    } catch (error) {
+      console.error('Error downloading as PNG:', error);
+      toast({
+        title: "Download Failed",
+        description: "There was an error creating your resume image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
   };
   
   const handleCopyText = () => {
@@ -118,6 +178,11 @@ export const ResumePreview = () => {
       </h2>
       
       <div className="flex flex-wrap gap-4 justify-center mb-6">
+        <Button variant="outline" onClick={handleDownloadAsPng} className="flex items-center" disabled={isDownloading}>
+          <Download className="h-4 w-4 mr-2" />
+          {isDownloading ? "Generating..." : "Download as PNG"}
+        </Button>
+        
         <Button variant="outline" onClick={handleDownload} className="flex items-center">
           <DownloadCloud className="h-4 w-4 mr-2" />
           Download as PDF
@@ -175,7 +240,6 @@ export const ResumePreview = () => {
             >
               {selectedTemplate.layout === 'two-column' ? (
                 <>
-                  {/* Left sidebar */}
                   <div className="col-span-1 flex flex-col" style={{ backgroundColor: colors.secondary + '20' }}>
                     {formValues.profileImageUrl && (
                       <div className="mx-auto mb-4 overflow-hidden rounded-full w-32 h-32 border-4" style={{ borderColor: colors.primary }}>
@@ -188,7 +252,6 @@ export const ResumePreview = () => {
                     )}
                     
                     <div className="p-4">
-                      {/* Contact Info */}
                       <div className="mb-6">
                         <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
                           Contact Information
@@ -212,7 +275,6 @@ export const ResumePreview = () => {
                         </ul>
                       </div>
                       
-                      {/* Online Profiles */}
                       {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6">
                           <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -233,7 +295,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Skills */}
                       {formValues.skills.length > 0 && (
                         <div className="mb-6">
                           <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -253,7 +314,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Certifications */}
                       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                         <div className="mb-6">
                           <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -275,7 +335,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Additional Info */}
                       {formValues.personalDetails.nationality && (
                         <div>
                           <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -293,7 +352,6 @@ export const ResumePreview = () => {
                     </div>
                   </div>
                   
-                  {/* Right content */}
                   <div className="col-span-2 p-4">
                     <div className="mb-6">
                       <h1 className="text-2xl font-bold mb-1" style={{ color: colors.primary }}>
@@ -306,7 +364,6 @@ export const ResumePreview = () => {
                       )}
                     </div>
                     
-                    {/* Experience */}
                     {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -329,7 +386,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Education */}
                     {formValues.education.length > 0 && formValues.education[0].degree && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -352,7 +408,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Projects */}
                     {formValues.projects.length > 0 && formValues.projects[0].title && (
                       <div className="resume-section">
                         <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
@@ -382,7 +437,6 @@ export const ResumePreview = () => {
                 </>
               ) : selectedTemplate.layout === 'hybrid' ? (
                 <>
-                  {/* Header */}
                   <div style={{ backgroundColor: colors.primary }} className="p-6 text-white mb-6">
                     <div className="flex items-center">
                       {formValues.profileImageUrl && (
@@ -406,11 +460,8 @@ export const ResumePreview = () => {
                     </div>
                   </div>
                   
-                  {/* Content Grid */}
                   <div className="grid grid-cols-3 gap-6">
-                    {/* Left column */}
                     <div className="col-span-1">
-                      {/* Contact Info */}
                       <div className="mb-6 resume-section">
                         <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
                           Contact Information
@@ -443,7 +494,6 @@ export const ResumePreview = () => {
                         </ul>
                       </div>
                       
-                      {/* Online Profiles */}
                       {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6 resume-section">
                           <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
@@ -460,7 +510,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Skills */}
                       {formValues.skills.length > 0 && (
                         <div className="mb-6 resume-section">
                           <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
@@ -480,7 +529,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Certifications */}
                       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                         <div className="resume-section">
                           <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
@@ -503,9 +551,7 @@ export const ResumePreview = () => {
                       )}
                     </div>
                     
-                    {/* Right column */}
                     <div className="col-span-2">
-                      {/* Experience */}
                       {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                         <div className="mb-6 resume-section">
                           <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
@@ -530,7 +576,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Education */}
                       {formValues.education.length > 0 && formValues.education[0].degree && (
                         <div className="mb-6 resume-section">
                           <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
@@ -555,7 +600,6 @@ export const ResumePreview = () => {
                         </div>
                       )}
                       
-                      {/* Projects */}
                       {formValues.projects.length > 0 && formValues.projects[0].title && (
                         <div className="resume-section">
                           <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
@@ -595,7 +639,6 @@ export const ResumePreview = () => {
                   <div className="mb-6 border-b-2 pb-4 text-center" style={{ borderColor: colors.primary }}>
                     <h1 className="text-3xl font-bold mb-2">{formValues.fullName}</h1>
                     
-                    {/* Contact Row */}
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
                       {formValues.contactInformation.email && (
                         <div>{formValues.contactInformation.email}</div>
@@ -619,7 +662,6 @@ export const ResumePreview = () => {
                   </div>
                   
                   <div className="space-y-6">
-                    {/* Skills */}
                     {formValues.skills.length > 0 && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
@@ -639,7 +681,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Experience */}
                     {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
@@ -664,7 +705,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Education */}
                     {formValues.education.length > 0 && formValues.education[0].degree && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
@@ -689,7 +729,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Projects */}
                     {formValues.projects.length > 0 && formValues.projects[0].title && (
                       <div className="mb-6 resume-section">
                         <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
@@ -722,7 +761,6 @@ export const ResumePreview = () => {
                       </div>
                     )}
                     
-                    {/* Certifications */}
                     {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                       <div className="resume-section">
                         <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
@@ -815,7 +853,6 @@ export const ResumePreview = () => {
                           {skill}
                         </Badge>
                       ))}
-                      {/* Suggest additional industry-specific keywords */}
                       <Badge variant="outline" className="bg-muted/30 text-muted-foreground border-dashed">
                         leadership
                       </Badge>
@@ -838,7 +875,6 @@ export const ResumePreview = () => {
         <Button 
           variant="outline" 
           onClick={() => {
-            // Scroll to form section
             document.getElementById('build')?.scrollIntoView({ behavior: 'smooth' });
           }}
           className="flex items-center"
@@ -850,7 +886,6 @@ export const ResumePreview = () => {
         <Button 
           variant="outline"
           onClick={() => {
-            // Generate a new random template
             const availableTemplates = [
               'modern', 'professional', 'creative', 
               'minimalist', 'executive', 'tech'
@@ -858,8 +893,6 @@ export const ResumePreview = () => {
             
             const randomIndex = Math.floor(Math.random() * availableTemplates.length);
             
-            // Not actually changing template here to avoid re-rendering
-            // In a real app, this would select a new template
             toast({
               title: "Template Updated",
               description: "Your resume has been regenerated with a new template style.",
