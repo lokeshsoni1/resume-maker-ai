@@ -1,101 +1,411 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+/* Base Themes */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+}
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+/* Theme: Dark Mode */
+.theme-dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+/* Theme: Cyberpunk */
+.theme-cyberpunk {
+  --background: 240 60% 10%;
+  --foreground: 180 100% 60%;
+  --card: 240 60% 15%;
+  --card-foreground: 180 100% 70%;
+  --popover: 240 60% 15%;
+  --popover-foreground: 180 100% 70%;
+  --primary: 330 100% 60%;
+  --primary-foreground: 240 60% 10%;
+  --secondary: 270 100% 60%;
+  --secondary-foreground: 240 60% 10%;
+  --muted: 240 60% 20%;
+  --muted-foreground: 180 30% 60%;
+  --accent: 300 100% 60%;
+  --accent-foreground: 240 60% 10%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 240 60% 10%;
+  --border: 240 50% 30%;
+  --input: 240 50% 20%;
+  --ring: 180 100% 60%;
+  --radius: 0.25rem;
+}
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+/* Theme: Neon Glow */
+.theme-neon {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 6%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 6%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 120 100% 60%;
+  --primary-foreground: 240 10% 3.9%;
+  --secondary: 200 100% 60%;
+  --secondary-foreground: 240 10% 3.9%;
+  --muted: 240 10% 10%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 300 100% 60%;
+  --accent-foreground: 240 10% 3.9%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 240 10% 3.9%;
+  --border: 240 10% 15%;
+  --input: 240 10% 10%;
+  --ring: 120 100% 60%;
+  --radius: 0.5rem;
+}
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+/* Theme: Pastel Gradient */
+.theme-pastel {
+  --background: 210 50% 98%;
+  --foreground: 210 50% 10%;
+  --card: 210 50% 99%;
+  --card-foreground: 210 50% 10%;
+  --popover: 210 50% 99%;
+  --popover-foreground: 210 50% 10%;
+  --primary: 220 70% 70%;
+  --primary-foreground: 210 50% 98%;
+  --secondary: 150 70% 80%;
+  --secondary-foreground: 210 50% 10%;
+  --muted: 210 50% 95%;
+  --muted-foreground: 210 50% 40%;
+  --accent: 340 70% 80%;
+  --accent-foreground: 210 50% 10%;
+  --destructive: 0 70% 70%;
+  --destructive-foreground: 210 50% 98%;
+  --border: 210 50% 90%;
+  --input: 210 50% 95%;
+  --ring: 220 70% 70%;
+  --radius: 1rem;
+}
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+/* Theme: Glassmorphism */
+.theme-glass {
+  --background: 0 0% 95%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100% / 0.8;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100% / 0.8;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9% / 0.8;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9% / 0.8;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9% / 0.8;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90% / 0.5;
+  --input: 240 5.9% 90% / 0.8;
+  --ring: 240 5.9% 10%;
+  --radius: 1rem;
+}
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+/* Theme: Aurora Night */
+.theme-aurora {
+  --background: 230 40% 10%;
+  --foreground: 210 40% 98%;
+  --card: 230 40% 12%;
+  --card-foreground: 210 40% 98%;
+  --popover: 230 40% 12%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 170 80% 50%;
+  --primary-foreground: 230 40% 10%;
+  --secondary: 270 80% 60%;
+  --secondary-foreground: 230 40% 10%;
+  --muted: 230 40% 15%;
+  --muted-foreground: 210 40% 80%;
+  --accent: 300 80% 50%;
+  --accent-foreground: 230 40% 10%;
+  --destructive: 0 80% 50%;
+  --destructive-foreground: 230 40% 10%;
+  --border: 230 40% 20%;
+  --input: 230 40% 15%;
+  --ring: 170 80% 50%;
+  --radius: 0.75rem;
+}
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+/* Theme: Retro Wave */
+.theme-retro {
+  --background: 270 50% 15%;
+  --foreground: 180 100% 80%;
+  --card: 270 50% 20%;
+  --card-foreground: 180 100% 80%;
+  --popover: 270 50% 20%;
+  --popover-foreground: 180 100% 80%;
+  --primary: 320 100% 65%;
+  --primary-foreground: 270 50% 15%;
+  --secondary: 240 100% 70%;
+  --secondary-foreground: 270 50% 15%;
+  --muted: 270 50% 25%;
+  --muted-foreground: 180 100% 70%;
+  --accent: 200 100% 65%;
+  --accent-foreground: 270 50% 15%;
+  --destructive: 0 100% 65%;
+  --destructive-foreground: 270 50% 15%;
+  --border: 270 50% 30%;
+  --input: 270 50% 25%;
+  --ring: 320 100% 65%;
+  --radius: 0.25rem;
+}
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+/* Theme: Monochrome */
+.theme-monochrome {
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  --primary: 0 0% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 50%;
+  --accent: 0 0% 90%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 80% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 96%;
+  --ring: 0 0% 10%;
+  --radius: 0.5rem;
+}
 
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+/* Theme: Nature Bloom */
+.theme-nature {
+  --background: 120 20% 98%;
+  --foreground: 120 50% 10%;
+  --card: 120 20% 100%;
+  --card-foreground: 120 50% 10%;
+  --popover: 120 20% 100%;
+  --popover-foreground: 120 50% 10%;
+  --primary: 130 70% 40%;
+  --primary-foreground: 120 20% 98%;
+  --secondary: 60 70% 80%;
+  --secondary-foreground: 120 50% 10%;
+  --muted: 120 20% 95%;
+  --muted-foreground: 120 50% 40%;
+  --accent: 30 70% 60%;
+  --accent-foreground: 120 20% 98%;
+  --destructive: 0 70% 60%;
+  --destructive-foreground: 120 20% 98%;
+  --border: 120 20% 90%;
+  --input: 120 20% 95%;
+  --ring: 130 70% 40%;
+  --radius: 1rem;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-poppins transition-colors duration-300;
   }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+  .glow {
+    @apply relative overflow-hidden;
+  }
+  
+  .glow::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-primary/40 opacity-0 transition-opacity duration-700;
+  }
+  
+  .glow:hover::before {
+    @apply opacity-100 animate-pulse;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-lg;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 5px rgba(var(--primary) / 0.5), 0 0 20px rgba(var(--primary) / 0.3);
+  }
+  
+  .cyberpunk-border {
+    @apply relative border-none;
+  }
+  
+  .cyberpunk-border::after {
+    content: '';
+    @apply absolute inset-0 border-2 border-primary -skew-x-6 -z-10;
+  }
+
+  .floating {
+    @apply animate-float;
+  }
+  
+  /* Scrollbar styling */
+  .styled-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .styled-scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted rounded-full;
+  }
+  
+  .styled-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 rounded-full hover:bg-primary/80 transition-colors;
+  }
+
+  /* Progress bar animation */
+  .progress-animation {
+    background: linear-gradient(90deg, var(--muted) 0%, var(--primary) 50%, var(--muted) 100%);
+    background-size: 200% 100%;
+    animation: progressAnimation 2s linear infinite;
+  }
+  
+  @keyframes progressAnimation {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  /* Particle effects base */
+  .particle-container {
+    @apply absolute inset-0 overflow-hidden pointer-events-none z-[-1];
+  }
+  
+  /* Theme-specific backgrounds */
+  .bg-cyberpunk {
+    background: radial-gradient(circle at top right, hsl(330, 100%, 60%, 0.2), transparent 40%),
+                radial-gradient(circle at bottom left, hsl(270, 100%, 60%, 0.2), transparent 40%),
+                hsl(240, 60%, 10%);
+  }
+  
+  .bg-neon {
+    background: linear-gradient(135deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 5%), hsl(240, 10%, 3.9%));
+  }
+  
+  .bg-pastel {
+    background: linear-gradient(120deg, hsl(210, 50%, 98%), hsl(220, 70%, 95%), hsl(210, 50%, 98%));
+  }
+  
+  .bg-glass {
+    background: linear-gradient(180deg, hsl(0, 0%, 95%), hsl(0, 0%, 97%), hsl(0, 0%, 95%));
+  }
+  
+  .bg-aurora {
+    background: linear-gradient(160deg, hsl(230, 40%, 10%), hsl(250, 40%, 15%), hsl(230, 40%, 10%));
+  }
+  
+  .bg-retro {
+    background: linear-gradient(180deg, hsl(270, 50%, 15%), hsl(260, 50%, 20%), hsl(270, 50%, 15%));
+  }
+  
+  .bg-monochrome {
+    background: linear-gradient(145deg, hsl(0, 0%, 98%), hsl(0, 0%, 95%), hsl(0, 0%, 98%));
+  }
+  
+  .bg-nature {
+    background: linear-gradient(135deg, hsl(120, 20%, 98%), hsl(100, 20%, 95%), hsl(120, 20%, 98%));
+  }
+}
+
+html {
+  @apply scroll-smooth;
+}
+
+.resume-section {
+  @apply mb-6 animate-fade-in;
+  animation-fill-mode: both;
+}
+
+.resume-section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.resume-section:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.resume-section:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.resume-section:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.resume-section:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+/* Custom transition for theme changes */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Fix for theme transition flickering */
+.no-transition {
+  transition: none !important;
+}
+
+/* Focus ring for accessibility */
+*:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
 }
