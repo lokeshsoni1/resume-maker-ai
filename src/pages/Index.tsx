@@ -25,7 +25,7 @@ const Index = () => {
 
 // Inner component that can use the context
 const ResumeBuilderApp = () => {
-  const { addExploredTheme, currentTheme } = useResume();
+  const { addExploredTheme } = useResume();
   const { currentTheme: activeTheme } = useTheme();
   
   // Track theme exploration for badges

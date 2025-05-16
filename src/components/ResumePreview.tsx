@@ -1,4 +1,3 @@
-
 import { useRef, useState } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
@@ -9,8 +8,8 @@ import {
   Edit,
   RefreshCw,
   Search,
-  SearchMinus,
-  SearchPlus,
+  ZoomIn,
+  ZoomOut,
   Sparkles,
   Share2
 } from 'lucide-react';
@@ -95,7 +94,6 @@ export const ResumePreview = () => {
     });
   };
   
-  // Get color based on template
   const getTemplateColors = () => {
     const colors: Record<string, { primary: string, secondary: string }> = {
       modern: { primary: '#3b82f6', secondary: '#93c5fd' },
@@ -135,11 +133,11 @@ export const ResumePreview = () => {
         
         <div className="flex items-center border rounded-md">
           <Button variant="ghost" size="icon" onClick={handleZoomOut}>
-            <SearchMinus className="h-4 w-4" />
+            <ZoomOut className="h-4 w-4" />
           </Button>
           <span className="px-2 text-sm">{zoomLevel}%</span>
           <Button variant="ghost" size="icon" onClick={handleZoomIn}>
-            <SearchPlus className="h-4 w-4" />
+            <ZoomIn className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" onClick={handleResetZoom}>
             <Search className="h-4 w-4" />
@@ -174,7 +172,6 @@ export const ResumePreview = () => {
               }}
             >
               {selectedTemplate.layout === 'two-column' ? (
-                // Two-column layout
                 <>
                   {/* Left sidebar */}
                   <div className="col-span-1 flex flex-col" style={{ backgroundColor: colors.secondary + '20' }}>
@@ -387,7 +384,6 @@ export const ResumePreview = () => {
                   </div>
                 </>
               ) : selectedTemplate.layout === 'hybrid' ? (
-                // Hybrid layout
                 <>
                   {/* Header */}
                   <div style={{ backgroundColor: colors.primary }} className="p-6 text-white mb-6">
@@ -601,7 +597,6 @@ export const ResumePreview = () => {
                   </div>
                 </>
               ) : (
-                // Single column layout
                 <>
                   <div className="mb-6 border-b-2 pb-4 text-center" style={{ borderColor: colors.primary }}>
                     <h1 className="text-3xl font-bold mb-2">{formValues.fullName}</h1>
@@ -693,7 +688,7 @@ export const ResumePreview = () => {
                                   {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                                 </div>
                               </div>
-                              {edu.gpa && <div className="text-sm">GPA: {edu.gpa}</div>}
+                              {edu.gpa && <div className="text-sm">{edu.gpa}</div>}
                             </div>
                           )
                         ))}
