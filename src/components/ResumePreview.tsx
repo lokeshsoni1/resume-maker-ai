@@ -3,7 +3,6 @@ import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-  DownloadCloud,
   Copy,
   Edit,
   RefreshCw,
@@ -25,20 +24,6 @@ export const ResumePreview = () => {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [isDownloading, setIsDownloading] = useState(false);
   
-  const handleDownload = () => {
-    incrementDownloadCount();
-    
-    toast({
-      title: "Download Instructions",
-      description: "Press Ctrl+P (or Cmd+P on Mac) and select 'Save as PDF' to download your resume.",
-    });
-    
-    // Open print dialog with only resume content visible
-    setTimeout(() => {
-      window.print();
-    }, 100);
-  };
-
   const handleDownloadAsPng = async () => {
     if (!resumeRef.current) return;
     
@@ -178,14 +163,14 @@ export const ResumePreview = () => {
       </h2>
       
       <div className="flex flex-wrap gap-4 justify-center mb-6">
-        <Button variant="outline" onClick={handleDownloadAsPng} className="flex items-center" disabled={isDownloading}>
+        <Button 
+          variant="outline" 
+          onClick={handleDownloadAsPng} 
+          className="flex items-center transition-all duration-300 hover:shadow-[0_0_12px_rgba(139,92,246,0.5)] bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white border-none" 
+          disabled={isDownloading}
+        >
           <Download className="h-4 w-4 mr-2" />
           {isDownloading ? "Generating..." : "Download as PNG"}
-        </Button>
-        
-        <Button variant="outline" onClick={handleDownload} className="flex items-center">
-          <DownloadCloud className="h-4 w-4 mr-2" />
-          Download as PDF
         </Button>
         
         <Button variant="outline" onClick={handleCopyText} className="flex items-center">
