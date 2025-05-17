@@ -1,35 +1,31 @@
 
-export interface FormValues {
-  fullName: string;
-  profileImage: File | null;
-  profileImageUrl: string;
-  personalDetails: {
-    bio: string;
-    dateOfBirth: string;
-    nationality: string;
-    address: string;
-  };
-  experience: ExperienceItem[];
-  education: EducationItem[];
-  projects: ProjectItem[];
-  skills: string[];
-  certifications: CertificationItem[];
-  contactInformation: {
-    email: string;
-    phone: string;
-    linkedin: string;
-    github: string;
-    portfolio: string;
-  };
-  workPreferences: {
-    jobType: 'full-time' | 'part-time' | 'contract';
-    workMode: 'remote' | 'hybrid' | 'onsite';
-    industry: string;
-    salaryExpectation: string;
-  };
+// Form Types
+export type FormStep =
+  | 'personal'
+  | 'experience'
+  | 'education'
+  | 'projects'
+  | 'skills'
+  | 'certifications'
+  | 'contact'
+  | 'preferences';
+
+export interface PersonalDetails {
+  bio: string;
+  dateOfBirth: string;
+  nationality: string;
+  address: string;
 }
 
-export interface ExperienceItem {
+export interface ContactInformation {
+  email: string;
+  phone: string;
+  linkedin: string;
+  github: string;
+  portfolio: string;
+}
+
+export interface Experience {
   id: string;
   jobTitle: string;
   company: string;
@@ -40,7 +36,7 @@ export interface ExperienceItem {
   description: string;
 }
 
-export interface EducationItem {
+export interface Education {
   id: string;
   degree: string;
   institution: string;
@@ -51,7 +47,7 @@ export interface EducationItem {
   gpa: string;
 }
 
-export interface ProjectItem {
+export interface Project {
   id: string;
   title: string;
   description: string;
@@ -59,7 +55,7 @@ export interface ProjectItem {
   link: string;
 }
 
-export interface CertificationItem {
+export interface Certification {
   id: string;
   name: string;
   issuer: string;
@@ -67,41 +63,68 @@ export interface CertificationItem {
   link: string;
 }
 
+export interface WorkPreferences {
+  jobType: string;
+  workMode: string;
+  industry: string;
+  salaryExpectation: string;
+}
+
+export interface FormValues {
+  fullName: string;
+  profileImage: File | null;
+  profileImageUrl: string;
+  personalDetails: PersonalDetails;
+  experience: Experience[];
+  education: Education[];
+  projects: Project[];
+  skills: string[];
+  certifications: Certification[];
+  contactInformation: ContactInformation;
+  workPreferences: WorkPreferences;
+}
+
+// Theme Types
 export interface Theme {
   id: string;
   name: string;
   className: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   description: string;
 }
 
+// Resume Template Types
 export interface ResumeTemplate {
   id: string;
   name: string;
   color: string;
-  imageUrl?: string;
   layout: 'single-column' | 'two-column' | 'hybrid';
+  secondaryColor?: string;
+  font?: string;
+  isAiGenerated?: boolean;
 }
 
-export interface ResumeTemplateProps {
-  formValues: FormValues;
-  template: ResumeTemplate;
+export interface AITemplate extends ResumeTemplate {
+  isAiGenerated: true;
+  fontFamily: string;
+  sectionAlignment: 'left' | 'center' | 'justified';
+  borderStyle?: string;
+  iconSet?: string;
 }
 
+// Badge Types
 export interface Badge {
   id: string;
   name: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   unlocked: boolean;
 }
 
-export type FormStep = 
-  | 'personal'
-  | 'experience'
-  | 'education'
-  | 'projects'
-  | 'skills'
-  | 'certifications'
-  | 'contact'
-  | 'preferences';
+// AI Suggestion Types
+export interface AISuggestion {
+  id: string;
+  text: string;
+  type: 'bio' | 'experience' | 'project';
+  context?: string; // e.g., job title, industry, etc.
+}

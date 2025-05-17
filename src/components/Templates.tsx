@@ -2,11 +2,20 @@
 import React from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
-import { FileText, ArrowRight } from 'lucide-react';
+import { FileText, ArrowRight, Wand } from 'lucide-react';
 import { ResumeTemplate } from '@/types';
+import { toast } from '@/components/ui/use-toast';
 
 export const Templates = () => {
-  const { availableTemplates, selectedTemplate, setSelectedTemplate } = useResume();
+  const { 
+    availableTemplates, 
+    selectedTemplate, 
+    setSelectedTemplate,
+    generateAiTemplate,
+    generatedTemplates
+  } = useResume();
+
+  const [isGeneratingTemplate, setIsGeneratingTemplate] = React.useState(false);
 
   const handleTemplateSelect = (template: ResumeTemplate) => {
     setSelectedTemplate(template);
@@ -18,6 +27,40 @@ export const Templates = () => {
       buildSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+  
+  const handleGenerateAiTemplate = async () => {
+    try {
+      setIsGeneratingTemplate(true);
+      
+      toast({
+        title: "Generating Template",
+        description: "AI is creating a unique template just for you...",
+      });
+      
+      // Generate new AI template
+      const newTemplate = await generateAiTemplate();
+      
+      // Select the new template
+      setSelectedTemplate(newTemplate);
+      
+      toast({
+        title: "Template Created!",
+        description: `Your AI-generated "${newTemplate.name}" template is ready to use.`,
+      });
+    } catch (error) {
+      console.error('Error generating template:', error);
+      toast({
+        title: "Generation Failed",
+        description: "We couldn't create a new template. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingTemplate(false);
+    }
+  };
+
+  // Combined templates list (standard + AI-generated)
+  const allTemplates = [...availableTemplates, ...generatedTemplates];
 
   return (
     <section id="templates" className="py-20 px-4 bg-muted/30">
@@ -30,10 +73,22 @@ export const Templates = () => {
             Choose from our collection of professionally designed templates 
             or let our AI select the perfect one for your industry and career level.
           </p>
+          
+          <div className="mt-8">
+            <Button
+              onClick={handleGenerateAiTemplate}
+              className="px-6 py-2 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:shadow-lg hover:scale-105 transition-all duration-300 hover:shadow-[0_0_12px_rgba(139,92,246,0.5)]"
+              disabled={isGeneratingTemplate}
+              aria-label="Generate a new unique resume template with AI"
+            >
+              <Wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
+              {isGeneratingTemplate ? "Generating..." : "Auto-Generate New Resume Template with AI"}
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {availableTemplates.map((template) => (
+          {allTemplates.map((template) => (
             <div
               key={template.id}
               className={`rounded-xl overflow-hidden glass-card transition-all duration-300 ${
@@ -100,18 +155,25 @@ export const Templates = () => {
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-medium">{template.name}</h3>
+                  <h3 className="text-lg font-medium">
+                    {template.name}
+                    {template.id.startsWith('ai-') && (
+                      <span className="ml-2 px-1.5 py-0.5 text-xs bg-primary/20 text-primary rounded-full">AI</span>
+                    )}
+                  </h3>
                   <div 
                     className="h-4 w-4 rounded-full"
                     style={{ backgroundColor: template.color }}
                   ></div>
                 </div>
                 <p className="text-sm text-foreground/70 mb-4">
-                  {template.layout === 'single-column'
-                    ? 'Clean, single-column layout perfect for a focused presentation.'
-                    : template.layout === 'two-column'
-                    ? 'Two-column format with sidebar for compact, efficient design.'
-                    : 'Hybrid layout with creative elements and modern styling.'
+                  {template.id.startsWith('ai-') 
+                    ? 'Custom AI-generated template with unique styling and layout.'
+                    : template.layout === 'single-column'
+                      ? 'Clean, single-column layout perfect for a focused presentation.'
+                      : template.layout === 'two-column'
+                      ? 'Two-column format with sidebar for compact, efficient design.'
+                      : 'Hybrid layout with creative elements and modern styling.'
                   }
                 </p>
                 <Button

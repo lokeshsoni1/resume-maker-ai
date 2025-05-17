@@ -1,92 +1,116 @@
 
+import { useState, useEffect } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
-import { Badge } from '@/types';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+  CheckCircle,
+  Star,
+  Award,
+  Sparkles,
+  Download,
+  Palette,
+  Trophy,
+  Wand
+} from 'lucide-react';
+import { Badge } from '@/types';
 
 export const BadgeDisplay = () => {
   const { badges } = useResume();
+  const [showBadge, setShowBadge] = useState(false);
+  const [activeBadge, setActiveBadge] = useState<Badge | null>(null);
   
-  const unlockedBadges = badges.filter(badge => badge.unlocked);
-  const lockedBadges = badges.filter(badge => !badge.unlocked);
-
-  if (unlockedBadges.length === 0) return null;
-
+  // Check for newly unlocked badges
+  useEffect(() => {
+    const unlockedBadges = badges.filter(badge => badge.unlocked);
+    const savedUnlocked = localStorage.getItem('displayed-badges');
+    const displayedBadges = savedUnlocked ? JSON.parse(savedUnlocked) : [];
+    
+    // Find newly unlocked badges that haven't been displayed yet
+    const newUnlocked = unlockedBadges.filter(badge => !displayedBadges.includes(badge.id));
+    
+    if (newUnlocked.length > 0) {
+      setActiveBadge(newUnlocked[0]);
+      setShowBadge(true);
+      
+      // Save to displayed badges
+      localStorage.setItem('displayed-badges', JSON.stringify([
+        ...displayedBadges,
+        newUnlocked[0].id
+      ]));
+      
+      // Hide after 5 seconds
+      const timer = setTimeout(() => {
+        setShowBadge(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [badges]);
+  
+  // Define all possible badges with their icons
+  const allBadges: Record<string, { name: string, description: string, icon: React.ReactNode }> = {
+    'first-resume': {
+      name: 'First Resume',
+      description: 'Created your first resume',
+      icon: <CheckCircle className="w-10 h-10 text-green-500" />
+    },
+    'theme-explorer': {
+      name: 'Theme Explorer',
+      description: 'Tried 3 different themes',
+      icon: <Palette className="w-10 h-10 text-purple-500" />
+    },
+    'download-master': {
+      name: 'Download Master',
+      description: 'Downloaded 5 resumes',
+      icon: <Download className="w-10 h-10 text-blue-500" />
+    },
+    'skills-guru': {
+      name: 'Skills Guru',
+      description: 'Added more than 10 skills',
+      icon: <Star className="w-10 h-10 text-amber-500" />
+    },
+    'complete-profile': {
+      name: 'Complete Profile',
+      description: 'Filled out all sections of the form',
+      icon: <Award className="w-10 h-10 text-indigo-500" />
+    },
+    'ai-enthusiast': {
+      name: 'AI Enthusiast',
+      description: 'Used AI suggestions 3 times',
+      icon: <Sparkles className="w-10 h-10 text-fuchsia-500" />
+    },
+    'ai-power-user': {
+      name: 'AI Power User',
+      description: 'Used AI suggestions 10+ times',
+      icon: <Trophy className="w-10 h-10 text-amber-500" />
+    },
+    'ai-template-creator': {
+      name: 'Template Creator',
+      description: 'Generated 3+ unique AI templates',
+      icon: <Wand className="w-10 h-10 text-teal-500" />
+    }
+  };
+  
+  // Render nothing if no badge to show
+  if (!showBadge || !activeBadge) return null;
+  
+  const badgeInfo = allBadges[activeBadge.id] || {
+    name: activeBadge.name,
+    description: activeBadge.description,
+    icon: <Award className="w-10 h-10 text-purple-500" />
+  };
+  
   return (
-    <div className="fixed bottom-4 right-4 z-30">
-      <Popover>
-        <PopoverTrigger asChild>
-          <button 
-            className="bg-primary text-primary-foreground rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow animate-pulse"
-            aria-label="View achievements"
-          >
-            <div className="relative">
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {unlockedBadges.length}
-              </span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="8" r="7"></circle>
-                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-              </svg>
-            </div>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="end">
-          <div className="p-4 border-b">
-            <h4 className="font-semibold text-lg mb-1">Your Achievements</h4>
-            <p className="text-sm text-muted-foreground">
-              {unlockedBadges.length} of {badges.length} badges unlocked
-            </p>
-          </div>
-          <div className="p-4 max-h-[300px] overflow-y-auto">
-            <div className="space-y-4">
-              <div>
-                <h5 className="font-medium mb-2 text-sm">Unlocked Badges</h5>
-                <div className="space-y-3">
-                  {unlockedBadges.map(badge => (
-                    <BadgeItem key={badge.id} badge={badge} unlocked={true} />
-                  ))}
-                </div>
-              </div>
-              
-              {lockedBadges.length > 0 && (
-                <div>
-                  <h5 className="font-medium mb-2 text-sm">Locked Badges</h5>
-                  <div className="space-y-3">
-                    {lockedBadges.map(badge => (
-                      <BadgeItem key={badge.id} badge={badge} unlocked={false} />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
+    <div className="fixed bottom-8 right-8 z-50 animate-fade-in">
+      <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-4 rounded-lg shadow-xl flex items-center space-x-4">
+        <div className="bg-white/20 p-3 rounded-full">
+          {badgeInfo.icon}
+        </div>
+        <div>
+          <h3 className="font-bold text-lg">Badge Unlocked!</h3>
+          <p className="font-semibold">{badgeInfo.name}</p>
+          <p className="text-sm opacity-90">{badgeInfo.description}</p>
+        </div>
+      </div>
     </div>
   );
 };
-
-interface BadgeItemProps {
-  badge: Badge;
-  unlocked: boolean;
-}
-
-const BadgeItem = ({ badge, unlocked }: BadgeItemProps) => (
-  <div className={`flex items-center gap-3 p-2 rounded-lg ${unlocked ? 'bg-primary/10' : 'bg-muted'}`}>
-    <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-      unlocked 
-        ? 'bg-primary text-primary-foreground' 
-        : 'bg-muted-foreground/20 text-muted-foreground/50'
-    }`}>
-      {badge.icon}
-    </div>
-    <div>
-      <h6 className="font-medium">{badge.name}</h6>
-      <p className="text-xs text-muted-foreground">{badge.description}</p>
-    </div>
-  </div>
-);

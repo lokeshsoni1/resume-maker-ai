@@ -11,7 +11,8 @@ import {
   Search,
   Sparkles,
   Share2,
-  Download
+  Download,
+  Wand
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
@@ -19,10 +20,11 @@ import { Badge } from '@/components/ui/badge';
 import html2canvas from 'html2canvas';
 
 export const ResumePreview = () => {
-  const { formValues, incrementDownloadCount, selectedTemplate } = useResume();
+  const { formValues, incrementDownloadCount, selectedTemplate, setSelectedTemplate, generateAiTemplate } = useResume();
   const resumeRef = useRef<HTMLDivElement>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
   
   const handleDownloadAsPng = async () => {
     if (!resumeRef.current) return;
@@ -130,32 +132,35 @@ export const ResumePreview = () => {
   const handleResetZoom = () => {
     setZoomLevel(100);
   };
-  
-  const getFormattedDate = (dateString: string) => {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'long',
-      year: 'numeric'
-    });
+
+  const handleGenerateAiTemplate = async () => {
+    try {
+      setIsGeneratingTemplate(true);
+      
+      toast({
+        title: "Generating Template",
+        description: "AI is creating a unique template just for you...",
+      });
+      
+      // Generate a new AI template
+      const newTemplate = await generateAiTemplate();
+      
+      toast({
+        title: "Template Created!",
+        description: "Your AI-generated template is ready to view.",
+      });
+    } catch (error) {
+      console.error('Error generating AI template:', error);
+      toast({
+        title: "Generation Failed",
+        description: "We couldn't create a new template. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingTemplate(false);
+    }
   };
-  
-  const getTemplateColors = () => {
-    const colors: Record<string, { primary: string, secondary: string }> = {
-      modern: { primary: '#3b82f6', secondary: '#93c5fd' },
-      professional: { primary: '#10b981', secondary: '#6ee7b7' },
-      creative: { primary: '#8b5cf6', secondary: '#c4b5fd' },
-      minimalist: { primary: '#6b7280', secondary: '#e5e7eb' },
-      executive: { primary: '#1e40af', secondary: '#93c5fd' },
-      tech: { primary: '#06b6d4', secondary: '#67e8f9' },
-    };
-    
-    return colors[selectedTemplate.id] || colors.modern;
-  };
-  
-  const colors = getTemplateColors();
-  
+
   return (
     <div id="resume-preview" className="w-full max-w-5xl mx-auto px-4 py-12">
       <h2 className="text-2xl font-bold text-center mb-8">
@@ -225,9 +230,9 @@ export const ResumePreview = () => {
             >
               {selectedTemplate.layout === 'two-column' ? (
                 <>
-                  <div className="col-span-1 flex flex-col" style={{ backgroundColor: colors.secondary + '20' }}>
+                  <div className="col-span-1 flex flex-col" style={{ backgroundColor: selectedTemplate.secondaryColor + '20' }}>
                     {formValues.profileImageUrl && (
-                      <div className="mx-auto mb-4 overflow-hidden rounded-full w-32 h-32 border-4" style={{ borderColor: colors.primary }}>
+                      <div className="mx-auto mb-4 overflow-hidden rounded-full w-32 h-32 border-4" style={{ borderColor: selectedTemplate.color }}>
                         <img 
                           src={formValues.profileImageUrl} 
                           alt={formValues.fullName} 
@@ -238,7 +243,7 @@ export const ResumePreview = () => {
                     
                     <div className="p-4">
                       <div className="mb-6">
-                        <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                        <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                           Contact Information
                         </h3>
                         <ul className="space-y-2 text-sm">
@@ -262,7 +267,7 @@ export const ResumePreview = () => {
                       
                       {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6">
-                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                             Online Profiles
                           </h3>
                           <ul className="space-y-2 text-sm">
@@ -282,7 +287,7 @@ export const ResumePreview = () => {
                       
                       {formValues.skills.length > 0 && (
                         <div className="mb-6">
-                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                             Skills
                           </h3>
                           <div className="flex flex-wrap gap-2">
@@ -290,7 +295,7 @@ export const ResumePreview = () => {
                               <span 
                                 key={skill} 
                                 className="inline-block text-xs py-1 px-2 rounded"
-                                style={{ backgroundColor: colors.primary + '20' }}
+                                style={{ backgroundColor: selectedTemplate.color + '20' }}
                               >
                                 {skill}
                               </span>
@@ -301,7 +306,7 @@ export const ResumePreview = () => {
                       
                       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                         <div className="mb-6">
-                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                             Certifications
                           </h3>
                           <ul className="space-y-3 text-sm">
@@ -322,7 +327,7 @@ export const ResumePreview = () => {
                       
                       {formValues.personalDetails.nationality && (
                         <div>
-                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-2 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                             Additional Info
                           </h3>
                           <ul className="space-y-2 text-sm">
@@ -339,7 +344,7 @@ export const ResumePreview = () => {
                   
                   <div className="col-span-2 p-4">
                     <div className="mb-6">
-                      <h1 className="text-2xl font-bold mb-1" style={{ color: colors.primary }}>
+                      <h1 className="text-2xl font-bold mb-1" style={{ color: selectedTemplate.color }}>
                         {formValues.fullName}
                       </h1>
                       {formValues.personalDetails.bio && (
@@ -351,7 +356,7 @@ export const ResumePreview = () => {
                     
                     {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                           Professional Experience
                         </h2>
                         {formValues.experience.map((exp) => (
@@ -373,7 +378,7 @@ export const ResumePreview = () => {
                     
                     {formValues.education.length > 0 && formValues.education[0].degree && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                           Education
                         </h2>
                         {formValues.education.map((edu) => (
@@ -395,7 +400,7 @@ export const ResumePreview = () => {
                     
                     {formValues.projects.length > 0 && formValues.projects[0].title && (
                       <div className="resume-section">
-                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: selectedTemplate.color }}>
                           Projects
                         </h2>
                         {formValues.projects.map((project) => (
@@ -404,7 +409,7 @@ export const ResumePreview = () => {
                               <div className="flex justify-between items-center">
                                 <div className="font-bold">{project.title}</div>
                                 {project.link && (
-                                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-sm underline" style={{ color: colors.primary }}>
+                                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-sm underline" style={{ color: selectedTemplate.color }}>
                                     View Project
                                   </a>
                                 )}
@@ -422,7 +427,7 @@ export const ResumePreview = () => {
                 </>
               ) : selectedTemplate.layout === 'hybrid' ? (
                 <>
-                  <div style={{ backgroundColor: colors.primary }} className="p-6 text-white mb-6">
+                  <div style={{ backgroundColor: selectedTemplate.color }} className="p-6 text-white mb-6">
                     <div className="flex items-center">
                       {formValues.profileImageUrl && (
                         <div className="mr-4 w-24 h-24 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
@@ -448,30 +453,30 @@ export const ResumePreview = () => {
                   <div className="grid grid-cols-3 gap-6">
                     <div className="col-span-1">
                       <div className="mb-6 resume-section">
-                        <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
+                        <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: selectedTemplate.color }}>
                           Contact Information
                         </h3>
                         <ul className="space-y-2 text-sm">
                           {formValues.contactInformation.email && (
                             <li className="flex items-center">
-                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.primary + '20' }}>
-                                <span style={{ color: colors.primary }}>✉</span>
+                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: selectedTemplate.color + '20' }}>
+                                <span style={{ color: selectedTemplate.color }}>✉</span>
                               </div>
                               {formValues.contactInformation.email}
                             </li>
                           )}
                           {formValues.contactInformation.phone && (
                             <li className="flex items-center">
-                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.primary + '20' }}>
-                                <span style={{ color: colors.primary }}>☏</span>
+                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: selectedTemplate.color + '20' }}>
+                                <span style={{ color: selectedTemplate.color }}>☏</span>
                               </div>
                               {formValues.contactInformation.phone}
                             </li>
                           )}
                           {formValues.personalDetails.address && (
                             <li className="flex items-center">
-                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.primary + '20' }}>
-                                <span style={{ color: colors.primary }}>⌂</span>
+                              <div className="w-5 h-5 mr-2 rounded-full flex items-center justify-center" style={{ backgroundColor: selectedTemplate.color + '20' }}>
+                                <span style={{ color: selectedTemplate.color }}>⌂</span>
                               </div>
                               {formValues.personalDetails.address}
                             </li>
@@ -481,7 +486,7 @@ export const ResumePreview = () => {
                       
                       {(formValues.contactInformation.linkedin || formValues.contactInformation.github) && (
                         <div className="mb-6 resume-section">
-                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: selectedTemplate.color }}>
                             Online Profiles
                           </h3>
                           <ul className="space-y-2 text-sm">
@@ -497,15 +502,15 @@ export const ResumePreview = () => {
                       
                       {formValues.skills.length > 0 && (
                         <div className="mb-6 resume-section">
-                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: selectedTemplate.color }}>
                             Skills
                           </h3>
                           <div className="flex flex-wrap gap-1">
                             {formValues.skills.map((skill) => (
                               <span 
                                 key={skill} 
-                                className="inline-block text-xs py-1 px-2 rounded-full mb-2"
-                                style={{ backgroundColor: colors.primary + '15', color: colors.primary }}
+                                className="inline-block text-xs py-1 px-2 rounded-full"
+                                style={{ backgroundColor: selectedTemplate.color + '15', color: selectedTemplate.color }}
                               >
                                 {skill}
                               </span>
@@ -516,7 +521,7 @@ export const ResumePreview = () => {
                       
                       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                         <div className="resume-section">
-                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: colors.primary }}>
+                          <h3 className="text-sm font-bold uppercase mb-3 pb-1 border-b" style={{ borderColor: selectedTemplate.color }}>
                             Certifications
                           </h3>
                           <ul className="space-y-3 text-sm">
@@ -526,7 +531,7 @@ export const ResumePreview = () => {
                                   <div className="font-medium">{cert.name}</div>
                                   <div className="text-xs">{cert.issuer}</div>
                                   {cert.date && (
-                                    <div className="text-xs opacity-75">{getFormattedDate(cert.date)}</div>
+                                    <div className="text-xs">{getFormattedDate(cert.date)}</div>
                                   )}
                                 </li>
                               )
@@ -539,7 +544,7 @@ export const ResumePreview = () => {
                     <div className="col-span-2">
                       {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                         <div className="mb-6 resume-section">
-                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
+                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: selectedTemplate.color, borderBottom: `2px solid ${selectedTemplate.color}` }}>
                             Professional Experience
                           </h2>
                           {formValues.experience.map((exp) => (
@@ -550,7 +555,7 @@ export const ResumePreview = () => {
                                     <div className="font-bold">{exp.jobTitle}</div>
                                     <div className="text-sm font-medium">{exp.company}{exp.location ? `, ${exp.location}` : ''}</div>
                                   </div>
-                                  <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: colors.primary + '15' }}>
+                                  <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: selectedTemplate.color + '15' }}>
                                     {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                                   </div>
                                 </div>
@@ -563,7 +568,7 @@ export const ResumePreview = () => {
                       
                       {formValues.education.length > 0 && formValues.education[0].degree && (
                         <div className="mb-6 resume-section">
-                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
+                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: selectedTemplate.color, borderBottom: `2px solid ${selectedTemplate.color}` }}>
                             Education
                           </h2>
                           {formValues.education.map((edu) => (
@@ -574,7 +579,7 @@ export const ResumePreview = () => {
                                     <div className="font-bold">{edu.degree}</div>
                                     <div className="text-sm font-medium">{edu.institution}{edu.location ? `, ${edu.location}` : ''}</div>
                                   </div>
-                                  <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: colors.primary + '15' }}>
+                                  <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: selectedTemplate.color + '15' }}>
                                     {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                                   </div>
                                 </div>
@@ -587,7 +592,7 @@ export const ResumePreview = () => {
                       
                       {formValues.projects.length > 0 && formValues.projects[0].title && (
                         <div className="resume-section">
-                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: colors.primary, borderBottom: `2px solid ${colors.primary}` }}>
+                          <h2 className="text-lg font-bold mb-4 pb-1" style={{ color: selectedTemplate.color, borderBottom: `2px solid ${selectedTemplate.color}` }}>
                             Projects
                           </h2>
                           {formValues.projects.map((project) => (
@@ -600,8 +605,8 @@ export const ResumePreview = () => {
                                       href={project.link} 
                                       target="_blank" 
                                       rel="noopener noreferrer" 
-                                      className="text-xs px-2 py-1 rounded" 
-                                      style={{ backgroundColor: colors.primary + '15', color: colors.primary }}
+                                      className="text-sm underline" 
+                                      style={{ color: selectedTemplate.color }}
                                     >
                                       View Project
                                     </a>
@@ -621,7 +626,7 @@ export const ResumePreview = () => {
                 </>
               ) : (
                 <>
-                  <div className="mb-6 border-b-2 pb-4 text-center" style={{ borderColor: colors.primary }}>
+                  <div className="mb-6 border-b-2 pb-4 text-center" style={{ borderColor: selectedTemplate.color }}>
                     <h1 className="text-3xl font-bold mb-2">{formValues.fullName}</h1>
                     
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
@@ -649,7 +654,7 @@ export const ResumePreview = () => {
                   <div className="space-y-6">
                     {formValues.skills.length > 0 && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3" style={{ color: selectedTemplate.color }}>
                           Skills
                         </h2>
                         <div className="flex flex-wrap gap-2">
@@ -657,7 +662,7 @@ export const ResumePreview = () => {
                             <span 
                               key={skill} 
                               className="inline-block text-sm py-1 px-3 rounded-lg border"
-                              style={{ borderColor: colors.primary + '50' }}
+                              style={{ borderColor: selectedTemplate.color + '50' }}
                             >
                               {skill}
                             </span>
@@ -668,7 +673,7 @@ export const ResumePreview = () => {
                     
                     {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3" style={{ color: selectedTemplate.color }}>
                           Professional Experience
                         </h2>
                         {formValues.experience.map((exp) => (
@@ -692,7 +697,7 @@ export const ResumePreview = () => {
                     
                     {formValues.education.length > 0 && formValues.education[0].degree && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3" style={{ color: selectedTemplate.color }}>
                           Education
                         </h2>
                         {formValues.education.map((edu) => (
@@ -716,7 +721,7 @@ export const ResumePreview = () => {
                     
                     {formValues.projects.length > 0 && formValues.projects[0].title && (
                       <div className="mb-6 resume-section">
-                        <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3" style={{ color: selectedTemplate.color }}>
                           Projects
                         </h2>
                         {formValues.projects.map((project) => (
@@ -730,7 +735,7 @@ export const ResumePreview = () => {
                                     target="_blank" 
                                     rel="noopener noreferrer" 
                                     className="text-sm underline" 
-                                    style={{ color: colors.primary }}
+                                    style={{ color: selectedTemplate.color }}
                                   >
                                     View Project
                                   </a>
@@ -748,7 +753,7 @@ export const ResumePreview = () => {
                     
                     {formValues.certifications.length > 0 && formValues.certifications[0].name && (
                       <div className="resume-section">
-                        <h2 className="text-lg font-bold mb-3" style={{ color: colors.primary }}>
+                        <h2 className="text-lg font-bold mb-3" style={{ color: selectedTemplate.color }}>
                           Certifications
                         </h2>
                         {formValues.certifications.map((cert) => (
@@ -769,7 +774,7 @@ export const ResumePreview = () => {
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   className="text-xs underline" 
-                                  style={{ color: colors.primary }}
+                                  style={{ color: selectedTemplate.color }}
                                 >
                                   View Certificate
                                 </a>
@@ -870,23 +875,24 @@ export const ResumePreview = () => {
         
         <Button 
           variant="outline"
-          onClick={() => {
-            const availableTemplates = [
-              'modern', 'professional', 'creative', 
-              'minimalist', 'executive', 'tech'
-            ];
-            
-            const randomIndex = Math.floor(Math.random() * availableTemplates.length);
-            
-            toast({
-              title: "Template Updated",
-              description: "Your resume has been regenerated with a new template style.",
-            });
-          }}
-          className="flex items-center"
+          onClick={handleGenerateAiTemplate}
+          className="flex items-center hover:bg-primary/10 hover:scale-105 transition-all duration-300"
+          disabled={isGeneratingTemplate}
         >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Try Different Template
+          <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
+          {isGeneratingTemplate ? "Generating..." : "Try Different Template"}
+        </Button>
+      </div>
+      
+      <div className="mt-8 text-center">
+        <Button
+          onClick={handleGenerateAiTemplate}
+          className="px-6 py-2 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:shadow-lg hover:scale-105 transition-all duration-300 hover:shadow-[0_0_12px_rgba(139,92,246,0.5)]"
+          disabled={isGeneratingTemplate}
+          aria-label="Generate a new unique resume template with AI"
+        >
+          <Wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
+          {isGeneratingTemplate ? "Generating..." : "Auto-Generate New Resume Template with AI"}
         </Button>
       </div>
     </div>
