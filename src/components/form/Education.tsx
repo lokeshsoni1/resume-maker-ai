@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { EducationItem } from '@/types';
+import { Education, EducationItem } from '@/types';
 import { Plus, Trash2, GraduationCap, Building, MapPin, Calendar } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from '@/components/ui/use-toast';

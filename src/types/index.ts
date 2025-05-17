@@ -1,4 +1,5 @@
 
+
 // Form Types
 export type FormStep =
   | 'personal'
@@ -36,6 +37,8 @@ export interface Experience {
   description: string;
 }
 
+export type ExperienceItem = Experience;
+
 export interface Education {
   id: string;
   degree: string;
@@ -47,6 +50,8 @@ export interface Education {
   gpa: string;
 }
 
+export type EducationItem = Education;
+
 export interface Project {
   id: string;
   title: string;
@@ -55,6 +60,8 @@ export interface Project {
   link: string;
 }
 
+export type ProjectItem = Project;
+
 export interface Certification {
   id: string;
   name: string;
@@ -62,6 +69,8 @@ export interface Certification {
   date: string;
   link: string;
 }
+
+export type CertificationItem = Certification;
 
 export interface WorkPreferences {
   jobType: string;

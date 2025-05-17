@@ -1,3 +1,4 @@
+
 import { useRef, useState } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
 import html2canvas from 'html2canvas';
+import { getFormattedDate } from '@/lib/date-utils';
 
 export const ResumePreview = () => {
   const { formValues, incrementDownloadCount, selectedTemplate, setSelectedTemplate, generateAiTemplate } = useResume();

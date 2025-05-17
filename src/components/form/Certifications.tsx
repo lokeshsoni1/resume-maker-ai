@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { CertificationItem } from '@/types';
+import { Certification, CertificationItem } from '@/types';
 import { Plus, Trash2, Award, Building, Calendar, Link } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 

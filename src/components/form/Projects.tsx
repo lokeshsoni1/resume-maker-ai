@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { ProjectItem } from '@/types';
+import { Project, ProjectItem } from '@/types';
 import { Plus, Trash2, FolderKanban, Code, Link } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
