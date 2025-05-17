@@ -35,7 +35,7 @@ export const FormStepNavigator = ({
     if (validateStep()) {
       if (currentIndex < stepOrder.length - 1) {
         setCurrentStep(stepOrder[currentIndex + 1]);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Removed scroll to top
       }
     } else {
       setIsValid(false);
@@ -46,7 +46,7 @@ export const FormStepNavigator = ({
   const handlePrevious = () => {
     if (currentIndex > 0) {
       setCurrentStep(stepOrder[currentIndex - 1]);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Removed scroll to top
     }
   };
   

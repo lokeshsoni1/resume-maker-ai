@@ -30,7 +30,7 @@ const OwnerProfile = () => {
       <div className="flex items-center bg-muted/30 p-2 rounded-full">
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary animate-pulse">
           <img 
-            src="/lovable-uploads/ad4cd700-949a-42dd-b481-42d4de5fd30c.png" 
+            src="/lovable-uploads/03f5b0ec-1ad7-4ed5-9300-3c3c55fd54b6.png" 
             alt="Lokesh Soni" 
             className="w-full h-full object-cover"
           />
