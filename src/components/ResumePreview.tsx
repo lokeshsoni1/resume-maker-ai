@@ -37,26 +37,61 @@ export const ResumePreview = () => {
       
       toast({
         title: "Generating Image",
-        description: "Please wait while we prepare your resume image...",
+        description: "Please wait while we prepare your high-quality resume image...",
       });
 
-      // Reset zoom for download
+      // Store original styles and scroll position
+      const originalStyles = {
+        position: resumeRef.current.style.position,
+        overflow: resumeRef.current.style.overflow,
+        transform: resumeRef.current.style.transform,
+        width: resumeRef.current.style.width,
+        height: resumeRef.current.style.height
+      };
+      
+      // Reset zoom for download and modify styles for full capture
       const originalZoom = zoomLevel;
       setZoomLevel(100);
       
       // Wait for re-render
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // Temporarily modify styles for better capture
+      resumeRef.current.style.position = 'relative';
+      resumeRef.current.style.overflow = 'visible';
+      resumeRef.current.style.transform = 'none';
+      
+      // Get actual dimensions
+      const { width, height } = resumeRef.current.getBoundingClientRect();
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
       
       // Capture resume as canvas
       const canvas = await html2canvas(resumeRef.current, {
-        scale: 2, // Higher quality
+        scale: window.devicePixelRatio || 2, // Use device pixel ratio for better quality
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
+        width: Math.ceil(width),
+        height: Math.ceil(height),
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
+        onclone: (clonedDoc) => {
+          // Make sure all content is visible in the clone
+          const clonedResume = clonedDoc.getElementById(resumeRef.current?.id || '');
+          if (clonedResume) {
+            clonedResume.style.transform = 'none';
+            clonedResume.style.position = 'relative';
+            clonedResume.style.overflow = 'visible';
+          }
+        }
       });
       
-      // Convert to PNG
-      const imgData = canvas.toDataURL('image/png');
+      // Convert to PNG with high quality
+      const imgData = canvas.toDataURL('image/png', 1.0);
       
       // Create download link
       const link = document.createElement('a');
@@ -66,12 +101,19 @@ export const ResumePreview = () => {
       link.click();
       document.body.removeChild(link);
       
-      // Reset zoom back
+      // Reset zoom back and restore original styles
       setZoomLevel(originalZoom);
+      if (resumeRef.current) {
+        resumeRef.current.style.position = originalStyles.position as string;
+        resumeRef.current.style.overflow = originalStyles.overflow as string;
+        resumeRef.current.style.transform = originalStyles.transform as string;
+        resumeRef.current.style.width = originalStyles.width as string;
+        resumeRef.current.style.height = originalStyles.height as string;
+      }
       
       toast({
         title: "Download Complete",
-        description: "Your resume has been downloaded as a PNG image.",
+        description: "Your high-quality resume has been downloaded as a PNG image.",
       });
     } catch (error) {
       console.error('Error downloading as PNG:', error);
@@ -175,6 +217,7 @@ export const ResumePreview = () => {
           onClick={handleDownloadAsPng} 
           className="flex items-center transition-all duration-300 hover:shadow-[0_0_12px_rgba(139,92,246,0.5)] bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white border-none" 
           disabled={isDownloading}
+          aria-label="Download resume as PNG image"
         >
           <Download className="h-4 w-4 mr-2" />
           {isDownloading ? "Generating..." : "Download as PNG"}
@@ -216,6 +259,7 @@ export const ResumePreview = () => {
             style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
           >
             <div 
+              id="resume-capture-container"
               ref={resumeRef}
               className={`resume-container bg-white text-black p-8 ${
                 selectedTemplate.layout === 'two-column' 
