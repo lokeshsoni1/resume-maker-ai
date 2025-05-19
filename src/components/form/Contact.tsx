@@ -3,6 +3,7 @@ import { useResume } from '@/contexts/ResumeContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
+import { Mail } from 'lucide-react';
 
 export const ContactForm = () => {
   const { formValues, setFormValues } = useResume();
@@ -65,10 +66,17 @@ export const ContactForm = () => {
             placeholder="youremail@example.com"
             required
             aria-label="Enter your contact email"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
           />
           <p className="text-xs text-muted-foreground mt-1">
             Enter a valid email address. This will be shown on your resume.
           </p>
+          
+          {/* Add the fixed contact email for the company - read only */}
+          <div className="mt-4 flex items-center p-2 bg-muted rounded">
+            <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Company contact: clipsspreader001@gmail.com</span>
+          </div>
         </div>
         
         <div>

@@ -1,3 +1,4 @@
+
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; // Import ThemeContext
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';

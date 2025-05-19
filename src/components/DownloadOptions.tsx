@@ -34,7 +34,7 @@ export const DownloadOptions = () => {
       // Scroll to top for consistent capturing
       window.scrollTo(0, 0);
       
-      // Capture element as canvas
+      // Capture element as canvas with high resolution
       const canvas = await html2canvas(element, {
         scale: window.devicePixelRatio || 2, // Use device pixel ratio for high resolution
         useCORS: true, // Handle cross-origin images
@@ -54,7 +54,9 @@ export const DownloadOptions = () => {
       // Convert canvas to data URL and download
       const dataUrl = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
-      link.download = `${fileName.trim() || 'Resume'}.png`;
+      
+      // Use the user's name for the filename if available
+      link.download = `${fileName.trim() || 'Resume'}-${new Date().toISOString().split('T')[0]}.png`;
       link.href = dataUrl;
       link.click();
       

@@ -1,37 +1,47 @@
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CurrencyOption } from "@/types";
-import { Label } from "@/components/ui/label";
+import { useResume } from '@/contexts/ResumeContext';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CurrencySelectProps {
-  value: string;
-  onChange: (value: string) => void;
   label?: string;
   className?: string;
 }
 
-export const CurrencySelect = ({ value, onChange, label, className }: CurrencySelectProps) => {
-  const currencies: CurrencyOption[] = [
-    { code: "INR", symbol: "₹", label: "₹ (INR)" },
-    { code: "USD", symbol: "$", label: "$ (USD)" },
-    { code: "EUR", symbol: "€", label: "€ (EUR)" }
-  ];
+export function CurrencySelect({ label = "Currency", className = "" }: CurrencySelectProps) {
+  const { formValues, setFormValues } = useResume();
+  
+  const handleCurrencyChange = (value: string) => {
+    setFormValues({
+      ...formValues,
+      workPreferences: {
+        ...formValues.workPreferences,
+        salaryCurrency: value
+      }
+    });
+  };
 
   return (
     <div className={className}>
-      {label && <Label htmlFor="currency-select">{label}</Label>}
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id="currency-select" aria-label="Select currency">
+      {label && <Label htmlFor="currency-select" className="block mb-2">{label}</Label>}
+      
+      <Select
+        value={formValues.workPreferences.salaryCurrency || 'USD'}
+        onValueChange={handleCurrencyChange}
+      >
+        <SelectTrigger id="currency-select" className="w-full">
           <SelectValue placeholder="Select currency" />
         </SelectTrigger>
         <SelectContent>
-          {currencies.map((currency) => (
-            <SelectItem key={currency.code} value={currency.code}>
-              {currency.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="USD">$ (USD)</SelectItem>
+          <SelectItem value="EUR">€ (EUR)</SelectItem>
+          <SelectItem value="INR">₹ (INR)</SelectItem>
         </SelectContent>
       </Select>
+      
+      <p className="text-xs text-muted-foreground mt-1">
+        Select the currency for your salary expectation
+      </p>
     </div>
   );
-};
+}
