@@ -4,7 +4,7 @@
  * @param date - Date string, Date object, or undefined
  * @returns Formatted date string or "Present" if undefined
  */
-export const getFormattedDate = (date: string | undefined): string => {
+export const getFormattedDate = (date: string | Date | undefined): string => {
   if (!date) return 'Present';
   
   try {
@@ -23,4 +23,20 @@ export const getFormattedDate = (date: string | undefined): string => {
     console.error('Error formatting date:', error);
     return 'Invalid Date';
   }
+};
+
+/**
+ * Format a salary with the appropriate currency symbol
+ * @param amount - Salary amount as string or number
+ * @param currency - Currency code (INR, USD, EUR)
+ * @returns Formatted salary with currency symbol
+ */
+export const formatSalary = (amount: string | number, currency: string = 'USD'): string => {
+  const symbols: Record<string, string> = { 
+    INR: '₹', 
+    USD: '$', 
+    EUR: '€' 
+  };
+  
+  return `${symbols[currency] || symbols.USD} ${amount}`;
 };

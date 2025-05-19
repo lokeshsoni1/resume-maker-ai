@@ -1,5 +1,4 @@
 
-
 // Form Types
 export type FormStep =
   | 'personal'
@@ -77,6 +76,7 @@ export interface WorkPreferences {
   workMode: string;
   industry: string;
   salaryExpectation: string;
+  salaryCurrency?: string; // Added for currency selection
 }
 
 export interface FormValues {
@@ -136,4 +136,15 @@ export interface AISuggestion {
   text: string;
   type: 'bio' | 'experience' | 'project';
   context?: string; // e.g., job title, industry, etc.
+}
+
+// Download Format Types
+export type DownloadFormat = 'png' | 'pdf' | 'word';
+
+// Currency Types
+export type CurrencyCode = 'INR' | 'USD' | 'EUR';
+export interface CurrencyOption {
+  code: CurrencyCode;
+  symbol: string;
+  label: string;
 }

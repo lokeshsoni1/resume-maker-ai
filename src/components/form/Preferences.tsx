@@ -1,156 +1,171 @@
 
 import { useResume } from '@/contexts/ResumeContext';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Briefcase, MapPin, Building, DollarSign } from 'lucide-react';
-
-const industries = [
-  "Technology",
-  "Software Development",
-  "Data Science",
-  "Marketing",
-  "Finance",
-  "Healthcare",
-  "Education",
-  "Engineering",
-  "Sales",
-  "Customer Service",
-  "Design",
-  "Product Management",
-  "Consulting",
-  "Human Resources",
-  "Legal",
-  "Operations",
-  "Research",
-  "Administration",
-  "Media",
-  "Retail",
-];
+import { Label } from '@/components/ui/label';
+import { CurrencySelect } from '@/components/CurrencySelect';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const PreferencesForm = () => {
   const { formValues, setFormValues } = useResume();
   
-  const handlePreferenceChange = (field: string, value: string) => {
+  const handleJobTypeChange = (value: string) => {
     setFormValues({
       ...formValues,
       workPreferences: {
         ...formValues.workPreferences,
-        [field]: value
+        jobType: value
       }
     });
   };
-
+  
+  const handleWorkModeChange = (value: string) => {
+    setFormValues({
+      ...formValues,
+      workPreferences: {
+        ...formValues.workPreferences,
+        workMode: value
+      }
+    });
+  };
+  
+  const handleIndustryChange = (value: string) => {
+    setFormValues({
+      ...formValues,
+      workPreferences: {
+        ...formValues.workPreferences,
+        industry: value
+      }
+    });
+  };
+  
+  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValues({
+      ...formValues,
+      workPreferences: {
+        ...formValues.workPreferences,
+        salaryExpectation: e.target.value
+      }
+    });
+  };
+  
+  const handleCurrencyChange = (value: string) => {
+    setFormValues({
+      ...formValues,
+      workPreferences: {
+        ...formValues.workPreferences,
+        salaryCurrency: value
+      }
+    });
+  };
+  
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
         <h2 className="text-2xl font-bold mb-2">Work Preferences</h2>
         <p className="text-muted-foreground mb-6">
-          Indicate your job preferences to help tailor your resume. This information helps the AI generate a more targeted resume.
+          Let employers know about your work preferences and expectations.
         </p>
       </div>
       
-      <Card className="p-5 mb-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="jobType" className="block mb-2">
+            Job Type
+          </Label>
+          <Select
+            value={formValues.workPreferences.jobType}
+            onValueChange={handleJobTypeChange}
+          >
+            <SelectTrigger id="jobType">
+              <SelectValue placeholder="Select job type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="full-time">Full-Time</SelectItem>
+              <SelectItem value="part-time">Part-Time</SelectItem>
+              <SelectItem value="contract">Contract</SelectItem>
+              <SelectItem value="internship">Internship</SelectItem>
+              <SelectItem value="freelance">Freelance</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div>
+          <Label htmlFor="workMode" className="block mb-2">
+            Work Mode
+          </Label>
+          <Select
+            value={formValues.workPreferences.workMode}
+            onValueChange={handleWorkModeChange}
+          >
+            <SelectTrigger id="workMode">
+              <SelectValue placeholder="Select work mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="on-site">On-site</SelectItem>
+              <SelectItem value="remote">Remote</SelectItem>
+              <SelectItem value="hybrid">Hybrid</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div>
+          <Label htmlFor="industry" className="block mb-2">
+            Preferred Industry
+          </Label>
+          <Select
+            value={formValues.workPreferences.industry}
+            onValueChange={handleIndustryChange}
+          >
+            <SelectTrigger id="industry">
+              <SelectValue placeholder="Select industry" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="tech">Technology</SelectItem>
+              <SelectItem value="finance">Finance</SelectItem>
+              <SelectItem value="healthcare">Healthcare</SelectItem>
+              <SelectItem value="education">Education</SelectItem>
+              <SelectItem value="retail">Retail</SelectItem>
+              <SelectItem value="manufacturing">Manufacturing</SelectItem>
+              <SelectItem value="media">Media & Entertainment</SelectItem>
+              <SelectItem value="hospitality">Hospitality & Tourism</SelectItem>
+              <SelectItem value="consulting">Consulting</SelectItem>
+              <SelectItem value="nonprofit">Nonprofit</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label className="flex items-center mb-4">
-              <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
-              Job Type
-            </Label>
-            <RadioGroup
-              value={formValues.workPreferences.jobType}
-              onValueChange={(value) => handlePreferenceChange('jobType', value)}
-              className="flex flex-col space-y-3"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="full-time" id="full-time" />
-                <Label htmlFor="full-time" className="font-normal">Full-time</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="part-time" id="part-time" />
-                <Label htmlFor="part-time" className="font-normal">Part-time</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="contract" id="contract" />
-                <Label htmlFor="contract" className="font-normal">Contract / Freelance</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          
-          <div>
-            <Label className="flex items-center mb-4">
-              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-              Work Mode
-            </Label>
-            <RadioGroup
-              value={formValues.workPreferences.workMode}
-              onValueChange={(value) => handlePreferenceChange('workMode', value)}
-              className="flex flex-col space-y-3"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="remote" id="remote" />
-                <Label htmlFor="remote" className="font-normal">Remote</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="hybrid" id="hybrid" />
-                <Label htmlFor="hybrid" className="font-normal">Hybrid</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="onsite" id="onsite" />
-                <Label htmlFor="onsite" className="font-normal">Onsite</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          
-          <div>
-            <Label htmlFor="industry" className="flex items-center mb-2">
-              <Building className="h-4 w-4 mr-2 text-muted-foreground" />
-              Industry / Field
-            </Label>
-            <Select 
-              value={formValues.workPreferences.industry}
-              onValueChange={(value) => handlePreferenceChange('industry', value)}
-            >
-              <SelectTrigger id="industry">
-                <SelectValue placeholder="Select an industry" />
-              </SelectTrigger>
-              <SelectContent>
-                {industries.map((industry) => (
-                  <SelectItem key={industry} value={industry.toLowerCase()}>
-                    {industry}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div>
-            <Label htmlFor="salary" className="flex items-center mb-2">
-              <DollarSign className="h-4 w-4 mr-2 text-muted-foreground" />
-              Salary Expectation (Optional)
+            <Label htmlFor="salary" className="block mb-2">
+              Salary Expectation
             </Label>
             <Input
               id="salary"
-              placeholder="e.g., $80,000 - $100,000 per year"
+              type="text"
+              placeholder="e.g. 50000"
               value={formValues.workPreferences.salaryExpectation}
-              onChange={(e) => handlePreferenceChange('salaryExpectation', e.target.value)}
+              onChange={handleSalaryChange}
+              className="w-full"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              This is for resume customization and won't appear on your resume unless specified
-            </p>
           </div>
+          
+          <CurrencySelect
+            label="Currency"
+            value={formValues.workPreferences.salaryCurrency || "USD"}
+            onChange={handleCurrencyChange}
+            className="w-full"
+          />
         </div>
-      </Card>
+      </div>
       
       <div className="mt-6">
-        <h3 className="text-lg font-medium mb-4">Why Work Preferences Matter:</h3>
+        <h3 className="text-lg font-medium mb-4">Work Preference Tips:</h3>
         <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-          <li>Helps our AI tailor your resume to specific job types and industries</li>
-          <li>Enables optimized keyword selection for Applicant Tracking Systems (ATS)</li>
-          <li>Informs appropriate design choices for your professional field</li>
-          <li>Customizes language and emphasis to match industry expectations</li>
+          <li>Be honest about your salary expectations</li>
+          <li>Consider the industry standards for your role and location</li>
+          <li>Specify work mode preferences clearly (remote, on-site, hybrid)</li>
+          <li>Include the type of job you're seeking (full-time, contract, etc.)</li>
+          <li>Make sure your preferences align with your career goals</li>
         </ul>
       </div>
     </div>

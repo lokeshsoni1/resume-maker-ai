@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
+import { Mail, ArrowUp } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 export const Footer = () => {
@@ -63,38 +63,9 @@ export const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-primary" />
-                <a href="mailto:mrlokeshsoni001@gmail.com" className="hover:text-primary transition-colors">
-                  mrlokeshsoni001@gmail.com
+                <a href="mailto:clipsspreader001@gmail.com" className="hover:text-primary transition-colors">
+                  clipsspreader001@gmail.com
                 </a>
-              </div>
-              
-              <div className="flex items-center">
-                <Github className="h-5 w-5 mr-3 text-primary" />
-                <a href="https://github.com/lokeshhsoni" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                  github.com/lokeshhsoni
-                </a>
-              </div>
-              
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-3">Connect With Me</h3>
-                <div className="flex gap-4">
-                  <a 
-                    href="https://www.linkedin.com/in/lokesh-soni-2b3b7034a/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </a>
-                  <a 
-                    href="https://github.com/lokeshhsoni" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                </div>
               </div>
             </div>
           </div>
@@ -163,7 +134,7 @@ export const Footer = () => {
           </div>
           
           <div className="mt-8 text-sm text-muted-foreground">
-            <p>© 2025 Made by Lokesh Soni. All rights reserved.</p>
+            <p>© 2025 made by Doctor Career. All rights reserved.</p>
           </div>
         </div>
       </div>
