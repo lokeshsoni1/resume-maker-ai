@@ -1,42 +1,48 @@
 
 /**
- * Format a date string into a human-readable format (e.g., "Jan 2023")
- * @param date - Date string, Date object, or undefined
- * @returns Formatted date string or "Present" if undefined
+ * Formats a date string into a more readable format
+ * @param dateString - ISO date string
+ * @returns Formatted date (e.g., "Jan 2023")
  */
-export const getFormattedDate = (date: string | Date | undefined): string => {
-  if (!date) return 'Present';
+export const getFormattedDate = (dateString: string): string => {
+  if (!dateString) return '';
   
   try {
-    const d = new Date(date);
-    
-    // Check if date is valid
-    if (isNaN(d.getTime())) {
-      return 'Invalid Date';
-    }
-    
-    return d.toLocaleDateString('en-US', { 
-      month: 'short', 
-      year: 'numeric' 
-    });
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   } catch (error) {
     console.error('Error formatting date:', error);
-    return 'Invalid Date';
+    return dateString; // Return original string if parsing fails
   }
 };
 
 /**
- * Format a salary with the appropriate currency symbol
- * @param amount - Salary amount as string or number
+ * Formats a salary value with a currency symbol
+ * @param salary - Salary value as string or number
  * @param currency - Currency code (INR, USD, EUR)
- * @returns Formatted salary with currency symbol
+ * @returns Formatted salary string with symbol
  */
-export const formatSalary = (amount: string | number, currency: string = 'USD'): string => {
-  const symbols: Record<string, string> = { 
-    INR: '₹', 
-    USD: '$', 
-    EUR: '€' 
+export const formatSalary = (salary: string | number, currency: string = 'USD'): string => {
+  if (!salary) return '';
+  
+  const symbols: Record<string, string> = {
+    INR: '₹',
+    USD: '$',
+    EUR: '€'
   };
   
-  return `${symbols[currency] || symbols.USD} ${amount}`;
+  const symbol = symbols[currency] || '$';
+  
+  // Try to parse and format the number
+  try {
+    const numericValue = typeof salary === 'string' ? parseFloat(salary) : salary;
+    
+    if (isNaN(numericValue)) return `${symbol}${salary}`;
+    
+    // Format with commas
+    return `${symbol}${numericValue.toLocaleString('en-US')}`;
+  } catch (error) {
+    // If something goes wrong, just concatenate the symbol
+    return `${symbol}${salary}`;
+  }
 };

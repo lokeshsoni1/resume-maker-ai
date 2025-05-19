@@ -1,9 +1,10 @@
 
 import { useResume } from '@/contexts/ResumeContext';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CurrencySelect } from '@/components/CurrencySelect';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatSalary } from '@/lib/date-utils';
 
 export const PreferencesForm = () => {
   const { formValues, setFormValues } = useResume();
@@ -63,109 +64,113 @@ export const PreferencesForm = () => {
       <div>
         <h2 className="text-2xl font-bold mb-2">Work Preferences</h2>
         <p className="text-muted-foreground mb-6">
-          Let employers know about your work preferences and expectations.
+          Let employers know your ideal work arrangement.
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <Label htmlFor="jobType" className="block mb-2">
+          <Label htmlFor="job-type" className="mb-2 block">
             Job Type
           </Label>
-          <Select
-            value={formValues.workPreferences.jobType}
+          <Select 
+            value={formValues.workPreferences.jobType} 
             onValueChange={handleJobTypeChange}
           >
-            <SelectTrigger id="jobType">
+            <SelectTrigger id="job-type">
               <SelectValue placeholder="Select job type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="full-time">Full-Time</SelectItem>
-              <SelectItem value="part-time">Part-Time</SelectItem>
-              <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="internship">Internship</SelectItem>
-              <SelectItem value="freelance">Freelance</SelectItem>
+              <SelectItem value="Full-time">Full-time</SelectItem>
+              <SelectItem value="Part-time">Part-time</SelectItem>
+              <SelectItem value="Contract">Contract</SelectItem>
+              <SelectItem value="Internship">Internship</SelectItem>
+              <SelectItem value="Freelance">Freelance</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
         <div>
-          <Label htmlFor="workMode" className="block mb-2">
+          <Label htmlFor="work-mode" className="mb-2 block">
             Work Mode
           </Label>
-          <Select
-            value={formValues.workPreferences.workMode}
+          <Select 
+            value={formValues.workPreferences.workMode} 
             onValueChange={handleWorkModeChange}
           >
-            <SelectTrigger id="workMode">
+            <SelectTrigger id="work-mode">
               <SelectValue placeholder="Select work mode" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="on-site">On-site</SelectItem>
-              <SelectItem value="remote">Remote</SelectItem>
-              <SelectItem value="hybrid">Hybrid</SelectItem>
+              <SelectItem value="Remote">Remote</SelectItem>
+              <SelectItem value="Hybrid">Hybrid</SelectItem>
+              <SelectItem value="On-site">On-site</SelectItem>
+              <SelectItem value="Flexible">Flexible</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
         <div>
-          <Label htmlFor="industry" className="block mb-2">
+          <Label htmlFor="industry" className="mb-2 block">
             Preferred Industry
           </Label>
-          <Select
-            value={formValues.workPreferences.industry}
+          <Select 
+            value={formValues.workPreferences.industry} 
             onValueChange={handleIndustryChange}
           >
             <SelectTrigger id="industry">
               <SelectValue placeholder="Select industry" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="tech">Technology</SelectItem>
-              <SelectItem value="finance">Finance</SelectItem>
-              <SelectItem value="healthcare">Healthcare</SelectItem>
-              <SelectItem value="education">Education</SelectItem>
-              <SelectItem value="retail">Retail</SelectItem>
-              <SelectItem value="manufacturing">Manufacturing</SelectItem>
-              <SelectItem value="media">Media & Entertainment</SelectItem>
-              <SelectItem value="hospitality">Hospitality & Tourism</SelectItem>
-              <SelectItem value="consulting">Consulting</SelectItem>
-              <SelectItem value="nonprofit">Nonprofit</SelectItem>
+              <SelectItem value="Tech">Technology</SelectItem>
+              <SelectItem value="Finance">Finance</SelectItem>
+              <SelectItem value="Healthcare">Healthcare</SelectItem>
+              <SelectItem value="Education">Education</SelectItem>
+              <SelectItem value="Marketing">Marketing</SelectItem>
+              <SelectItem value="Design">Design</SelectItem>
+              <SelectItem value="Engineering">Engineering</SelectItem>
+              <SelectItem value="Retail">Retail</SelectItem>
+              <SelectItem value="Hospitality">Hospitality</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="salary" className="block mb-2">
-              Salary Expectation
-            </Label>
-            <Input
-              id="salary"
-              type="text"
-              placeholder="e.g. 50000"
-              value={formValues.workPreferences.salaryExpectation}
-              onChange={handleSalaryChange}
-              className="w-full"
+        <div>
+          <Label htmlFor="salary" className="mb-2 block">
+            Salary Expectation
+          </Label>
+          <div className="flex gap-3">
+            <div className="flex-grow">
+              <Input
+                id="salary"
+                type="text"
+                placeholder="e.g. 75000"
+                value={formValues.workPreferences.salaryExpectation}
+                onChange={handleSalaryChange}
+              />
+            </div>
+            <CurrencySelect
+              value={formValues.workPreferences.salaryCurrency || "USD"}
+              onChange={handleCurrencyChange}
+              className="w-24"
             />
           </div>
-          
-          <CurrencySelect
-            label="Currency"
-            value={formValues.workPreferences.salaryCurrency || "USD"}
-            onChange={handleCurrencyChange}
-            className="w-full"
-          />
+          {formValues.workPreferences.salaryExpectation && formValues.workPreferences.salaryCurrency && (
+            <p className="text-muted-foreground mt-2">
+              Formatted: {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
+            </p>
+          )}
         </div>
       </div>
       
       <div className="mt-6">
-        <h3 className="text-lg font-medium mb-4">Work Preference Tips:</h3>
+        <h3 className="text-lg font-medium mb-4">Work Preferences Tips:</h3>
         <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-          <li>Be honest about your salary expectations</li>
-          <li>Consider the industry standards for your role and location</li>
-          <li>Specify work mode preferences clearly (remote, on-site, hybrid)</li>
-          <li>Include the type of job you're seeking (full-time, contract, etc.)</li>
-          <li>Make sure your preferences align with your career goals</li>
+          <li>Choose the job type that best suits your availability and career goals</li>
+          <li>Be specific about your work mode preference to find compatible employers</li>
+          <li>Include salary information if you're comfortable sharing it</li>
+          <li>Consider adding ranges rather than specific numbers for flexibility</li>
         </ul>
       </div>
     </div>

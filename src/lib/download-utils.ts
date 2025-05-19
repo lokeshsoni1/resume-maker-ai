@@ -138,7 +138,7 @@ export const downloadAsWord = (resumeData: any, fileName: string = 'Resume'): vo
     <body>
       <h1>${resumeData.fullName || 'Resume'}</h1>
       <p>${resumeData.personalDetails?.bio || ''}</p>
-      <p>Email: clipsspreader001@gmail.com</p>`;
+      <p>Email: ${resumeData.contactInformation?.email || ''}</p>`;
     
     // Add experience section
     if (resumeData.experience && resumeData.experience.length > 0) {
@@ -168,6 +168,7 @@ export const downloadAsWord = (resumeData: any, fileName: string = 'Resume'): vo
             <span class="dates">${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}</span>
           </div>
           <div>${edu.location}</div>
+          <div>GPA: ${edu.gpa}</div>
         </div>`;
       });
       content += `</div>`;
@@ -176,6 +177,48 @@ export const downloadAsWord = (resumeData: any, fileName: string = 'Resume'): vo
     // Add skills section
     if (resumeData.skills && resumeData.skills.length > 0) {
       content += `<div class="section"><h2>Skills</h2><p>${resumeData.skills.join(', ')}</p></div>`;
+    }
+    
+    // Add projects section
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      content += `<div class="section"><h2>Projects</h2>`;
+      resumeData.projects.forEach((project: any) => {
+        content += `
+        <div class="item">
+          <strong>${project.title}</strong>
+          <p>${project.description}</p>
+          <div>Technologies: ${project.technologies}</div>
+        </div>`;
+      });
+      content += `</div>`;
+    }
+    
+    // Add certifications section
+    if (resumeData.certifications && resumeData.certifications.length > 0) {
+      content += `<div class="section"><h2>Certifications</h2>`;
+      resumeData.certifications.forEach((cert: any) => {
+        content += `
+        <div class="item">
+          <strong>${cert.name}</strong>
+          <div>Issuer: ${cert.issuer}</div>
+          <div>Date: ${cert.date}</div>
+        </div>`;
+      });
+      content += `</div>`;
+    }
+    
+    // Add work preferences
+    if (resumeData.workPreferences) {
+      content += `<div class="section"><h2>Work Preferences</h2>`;
+      content += `<div>Job Type: ${resumeData.workPreferences.jobType || 'Not specified'}</div>`;
+      content += `<div>Work Mode: ${resumeData.workPreferences.workMode || 'Not specified'}</div>`;
+      content += `<div>Industry: ${resumeData.workPreferences.industry || 'Not specified'}</div>`;
+      if (resumeData.workPreferences.salaryExpectation) {
+        const currency = resumeData.workPreferences.salaryCurrency || 'USD';
+        const symbols: Record<string, string> = { INR: '₹', USD: '$', EUR: '€' };
+        content += `<div>Salary Expectation: ${symbols[currency] || '$'}${resumeData.workPreferences.salaryExpectation}</div>`;
+      }
+      content += `</div>`;
     }
     
     content += `</body></html>`;

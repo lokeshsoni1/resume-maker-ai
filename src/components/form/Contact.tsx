@@ -2,17 +2,17 @@
 import { useResume } from '@/contexts/ResumeContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from '@/components/ui/use-toast';
 
 export const ContactForm = () => {
   const { formValues, setFormValues } = useResume();
   
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Set a fixed email
     setFormValues({
       ...formValues,
       contactInformation: {
         ...formValues.contactInformation,
-        email: "clipsspreader001@gmail.com"
+        email: e.target.value
       }
     });
   };
@@ -25,6 +25,21 @@ export const ContactForm = () => {
         phone: e.target.value
       }
     });
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+  const handleBlur = () => {
+    if (formValues.contactInformation.email && !validateEmail(formValues.contactInformation.email)) {
+      toast({
+        title: "Invalid Email Format",
+        description: "Please enter a valid email address",
+        variant: "destructive"
+      });
+    }
   };
   
   return (
@@ -44,12 +59,16 @@ export const ContactForm = () => {
           <Input
             id="email"
             type="email"
-            value="clipsspreader001@gmail.com"
+            value={formValues.contactInformation.email}
             onChange={handleEmailChange}
+            onBlur={handleBlur}
             placeholder="youremail@example.com"
-            readOnly
             required
+            aria-label="Enter your contact email"
           />
+          <p className="text-xs text-muted-foreground mt-1">
+            Enter a valid email address. This will be shown on your resume.
+          </p>
         </div>
         
         <div>

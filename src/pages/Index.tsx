@@ -23,31 +23,6 @@ const Index = () => {
   );
 };
 
-// Owner profile component
-const OwnerProfile = () => {
-  return (
-    <div className="flex items-center justify-center py-4 animate-fade-in">
-      <div className="flex items-center bg-muted/30 p-2 rounded-full">
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary animate-pulse">
-          <img 
-            src="/lovable-uploads/03f5b0ec-1ad7-4ed5-9300-3c3c55fd54b6.png" 
-            alt="Lokesh Soni" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="ml-3">
-          <p className="font-medium text-sm">Lokesh Soni</p>
-          <p className="text-xs text-muted-foreground">Owner</p>
-          <div className="flex space-x-2 mt-1">
-            <a href="https://www.linkedin.com/in/lokesh-soni-2b3b7034a/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">LinkedIn</a>
-            <a href="https://github.com/lokeshhsoni" target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">GitHub</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Inner component that can use the context
 const ResumeBuilderApp = () => {
   const { addExploredTheme } = useResume();
@@ -61,7 +36,6 @@ const ResumeBuilderApp = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <OwnerProfile />
       <main className="flex-grow">
         <Hero />
         <Features />

@@ -1,4 +1,3 @@
-
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; // Import ThemeContext
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -40,7 +39,7 @@ export const ResumePreview = () => {
               <h1>{formValues.fullName}</h1>
               <p className="bio">{formValues.personalDetails.bio}</p>
               <ul className="contact-info">
-                <li>Email: clipsspreader001@gmail.com</li>
+                <li>Email: {formValues.contactInformation.email}</li>
                 <li>Phone: {formValues.contactInformation.phone}</li>
                 <li>Address: {formValues.personalDetails.address}</li>
               </ul>

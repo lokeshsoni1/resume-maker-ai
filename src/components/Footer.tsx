@@ -1,143 +1,79 @@
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Mail, ArrowUp } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { Icons } from "@/components/ui/icons";
 
-export const Footer = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for your feedback. I'll get back to you soon.",
-      });
-      
-      setFormData({
-        name: '',
-        email: '',
-        message: '',
-      });
-      
-      setIsSubmitting(false);
-    }, 1500);
-  };
-  
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  
+export function Footer() {
   return (
-    <footer id="contact" className="relative pt-16 pb-8 border-t">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Contact Info */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Get In Touch</h2>
-            <p className="mb-6 text-muted-foreground">
-              Have questions about the Resume Builder? Interested in collaborating? 
-              Drop me a message and I'll get back to you!
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <Mail className="h-5 w-5 mr-3 text-primary" />
-                <a href="mailto:clipsspreader001@gmail.com" className="hover:text-primary transition-colors">
-                  clipsspreader001@gmail.com
-                </a>
-              </div>
-            </div>
-          </div>
-          
-          {/* Contact Form */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Send a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your Name"
-                  required
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <Input
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Your Email"
-                  type="email"
-                  required
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <Textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your Message"
-                  required
-                  className="w-full min-h-[150px] resize-none"
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          </div>
+    <footer className="border-t py-8 md:py-10" aria-label="Website footer">
+      <div className="container grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
+        <div className="flex flex-col gap-2">
+          <h3 className="text-lg font-semibold">Resume Builder</h3>
+          <p className="text-muted-foreground text-sm">
+            Create professional resumes quickly with advanced AI features.
+          </p>
         </div>
         
-        <div className="mt-16 pt-8 border-t text-center">
-          <div className="flex flex-col items-center">
-            <div className="text-2xl font-bold mb-2">Resume Builder</div>
-            <p className="text-muted-foreground">Craft the Perfect Resume with AI</p>
-          </div>
-          
-          <div className="mt-6 flex justify-center">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={scrollToTop}
-              className="rounded-full animate-bounce"
-            >
-              <ArrowUp className="h-5 w-5" />
-            </Button>
-          </div>
-          
-          <div className="mt-8 text-sm text-muted-foreground">
-            <p>© 2025 made by Doctor Career. All rights reserved.</p>
-          </div>
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Resources</h3>
+          <ul className="space-y-1 text-sm">
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Resume Writing Guide
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Job Interview Tips
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Career Development
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Support</h3>
+          <ul className="space-y-1 text-sm">
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Help Center
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Terms of Service
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div className="container mt-8 flex flex-col md:flex-row justify-between items-center border-t pt-6">
+        <p className="text-center text-sm text-muted-foreground mb-4 md:mb-0">
+          © 2025 made by Doctor Career. All rights reserved.
+        </p>
+        <div className="flex items-center gap-4">
+          <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <span className="sr-only">Twitter</span>
+            <Icons.twitter className="h-5 w-5" />
+          </a>
+          <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <span className="sr-only">Instagram</span>
+            <Icons.instagram className="h-5 w-5" />
+          </a>
+          <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <span className="sr-only">Facebook</span>
+            <Icons.facebook className="h-5 w-5" />
+          </a>
         </div>
       </div>
     </footer>
   );
-};
+}
