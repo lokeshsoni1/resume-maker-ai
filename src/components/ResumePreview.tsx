@@ -1,21 +1,24 @@
+
 import { useResume } from '@/contexts/ResumeContext';
+import { useTheme } from '@/contexts/ThemeContext'; // Import ThemeContext
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
 import { Badge } from '@/components/ui/badge';
 import { Download, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Theme } from '@/types';
 
 // Import our download options component at the top of the file
 import { DownloadOptions } from '@/components/DownloadOptions';
 
 export const ResumePreview = () => {
-  const { formValues, theme } = useResume();
+  const { formValues } = useResume();
+  const { themes, currentTheme } = useTheme(); // Get theme from ThemeContext
   
   const handlePrint = () => {
     window.print();
   };
   
-  const getThemeClass = (theme: Theme | null) => {
+  const getThemeClass = () => {
+    const theme = themes.find(t => t.id === currentTheme);
     return theme ? theme.className : 'default-theme';
   };
   
@@ -26,7 +29,7 @@ export const ResumePreview = () => {
           Resume Preview
         </h2>
         
-        <div className={`resume-container ${getThemeClass(theme)}`}>
+        <div className={`resume-container ${getThemeClass()}`}>
           <header className="resume-header">
             <div className="profile-image">
               {formValues.profileImageUrl && (

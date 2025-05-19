@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { FormValues, FormStep, ResumeTemplate, Badge, AITemplate } from '@/types';
+import { FormValues, FormStep, ResumeTemplate, Badge, AITemplate, Theme } from '@/types';
 import { 
   CheckCircle, 
   Star, 
@@ -255,6 +255,7 @@ interface ResumeContextType {
   addExploredTheme: (themeId: string) => void;
   aiSuggestionsUsed: number;
   incrementAiSuggestions: () => void;
+  theme: Theme | null; // Add the theme property
 }
 
 const ResumeContext = createContext<ResumeContextType>({
@@ -283,6 +284,7 @@ const ResumeContext = createContext<ResumeContextType>({
   addExploredTheme: () => {},
   aiSuggestionsUsed: 0,
   incrementAiSuggestions: () => {},
+  theme: null, // Set default theme value to null
 });
 
 export const useResume = () => useContext(ResumeContext);
@@ -305,6 +307,7 @@ export const ResumeProvider = ({ children }: { children: React.ReactNode }) => {
   const [themesExplored, setThemesExplored] = useState<string[]>([]);
   const [aiSuggestionsUsed, setAiSuggestionsUsed] = useState(0);
   const [generatedTemplates, setGeneratedTemplates] = useState<ResumeTemplate[]>([]);
+  const [theme, setTheme] = useState<Theme | null>(null); // Add theme state
 
   // Save form data to localStorage when it changes
   useEffect(() => {
@@ -704,7 +707,8 @@ export const ResumeProvider = ({ children }: { children: React.ReactNode }) => {
       themesExplored,
       addExploredTheme,
       aiSuggestionsUsed,
-      incrementAiSuggestions
+      incrementAiSuggestions,
+      theme, // Include theme in the context value
     }}>
       {children}
     </ResumeContext.Provider>
