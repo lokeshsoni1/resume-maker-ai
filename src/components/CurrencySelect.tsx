@@ -6,27 +6,40 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface CurrencySelectProps {
   label?: string;
   className?: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export function CurrencySelect({ label = "Currency", className = "" }: CurrencySelectProps) {
+export function CurrencySelect({ 
+  label = "Currency", 
+  className = "",
+  value,
+  onChange
+}: CurrencySelectProps) {
   const { formValues, setFormValues } = useResume();
   
-  const handleCurrencyChange = (value: string) => {
-    setFormValues({
-      ...formValues,
-      workPreferences: {
-        ...formValues.workPreferences,
-        salaryCurrency: value
-      }
-    });
+  const handleCurrencyChange = (newValue: string) => {
+    if (onChange) {
+      onChange(newValue);
+    } else {
+      setFormValues({
+        ...formValues,
+        workPreferences: {
+          ...formValues.workPreferences,
+          salaryCurrency: newValue
+        }
+      });
+    }
   };
+
+  const currentValue = value || formValues.workPreferences.salaryCurrency || 'USD';
 
   return (
     <div className={className}>
       {label && <Label htmlFor="currency-select" className="block mb-2">{label}</Label>}
       
       <Select
-        value={formValues.workPreferences.salaryCurrency || 'USD'}
+        value={currentValue}
         onValueChange={handleCurrencyChange}
       >
         <SelectTrigger id="currency-select" className="w-full">

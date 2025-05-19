@@ -151,8 +151,7 @@ export const PreferencesForm = () => {
               />
             </div>
             <CurrencySelect
-              value={formValues.workPreferences.salaryCurrency || "USD"}
-              onChange={handleCurrencyChange}
+              label=""
               className="w-24"
             />
           </div>

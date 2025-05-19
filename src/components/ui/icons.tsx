@@ -1,5 +1,5 @@
 
-import { Twitter, Instagram, Facebook, Mail, RefreshCw, Loader2, ZoomOut } from 'lucide-react';
+import { Twitter, Instagram, Facebook, Mail, RefreshCw, Loader2, ZoomOut, CurrencyIcon, DollarSign, Euro, IndianRupee, JapaneseYen } from 'lucide-react';
 
 // Export the icons object
 export const Icons = {
@@ -9,5 +9,10 @@ export const Icons = {
   mail: Mail,
   refreshCw: RefreshCw,
   loader2: Loader2,
-  zoomOut: ZoomOut
+  zoomOut: ZoomOut,
+  currencyIcon: CurrencyIcon,
+  dollarSign: DollarSign,
+  euro: Euro,
+  indianRupee: IndianRupee,
+  japaneseYen: JapaneseYen
 };
