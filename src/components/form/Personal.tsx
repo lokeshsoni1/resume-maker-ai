@@ -1,18 +1,19 @@
-
-import { useState } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import { RefreshCw, Upload, Sparkles } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 export const PersonalForm = () => {
-  const { formValues, setFormValues, incrementAiSuggestions, generateAiBioSuggestion } = useResume();
-  const [bioSuggestions, setBioSuggestions] = useState<string[]>([]);
-  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const { formValues, setFormValues, generateAiBioSuggestion, incrementAiSuggestions } = useResume();
+  const [showSuggestionBox, setShowSuggestionBox] = useState(false);
+  const [summaryType, setSummaryType] = useState('');
+  const [generatedSummary, setGeneratedSummary] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
@@ -28,45 +29,6 @@ export const PersonalForm = () => {
         ...formValues.personalDetails,
         bio: e.target.value
       }
-    });
-  };
-  
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    // Check file size (limit to 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Profile image must be less than 5MB.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload an image file (JPEG, PNG, etc).",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Create URL for preview
-    const imageUrl = URL.createObjectURL(file);
-    
-    setFormValues({
-      ...formValues,
-      profileImage: file,
-      profileImageUrl: imageUrl
-    });
-    
-    toast({
-      title: "Image uploaded",
-      description: "Your profile image has been uploaded successfully."
     });
   };
   
@@ -90,7 +52,7 @@ export const PersonalForm = () => {
     });
   };
   
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFormValues({
       ...formValues,
       personalDetails: {
@@ -100,211 +62,240 @@ export const PersonalForm = () => {
     });
   };
   
-  const handleGenerateBioSuggestions = () => {
-    setIsGeneratingSuggestions(true);
+  // Function to handle profile image upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     
-    // Get job title to contextualize suggestions (if available)
-    const jobTitle = formValues.experience[0]?.jobTitle || '';
+    // Create a temp URL to display the image immediately
+    const imageUrl = URL.createObjectURL(file);
+    setFormValues({
+      ...formValues,
+      profileImage: file,
+      profileImageUrl: imageUrl
+    });
     
-    try {
-      // Generate multiple unique suggestions
-      const suggestions = [
-        generateAiBioSuggestion(jobTitle),
-        generateAiBioSuggestion(jobTitle),
-        generateAiBioSuggestion(jobTitle)
-      ];
-      
-      setBioSuggestions(suggestions);
-    } catch (error) {
-      console.error('Error generating suggestions:', error);
-      toast({
-        title: "Suggestion Generation Failed",
-        description: "We couldn't create suggestions. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGeneratingSuggestions(false);
-    }
+    // Here you would normally upload to a server/Supabase
+    // but for now we're just keeping it in state
   };
   
-  const handleUseSuggestion = (suggestion: string) => {
+  // AI suggestion handlers
+  const handleGenerateSummary = async () => {
+    if (!summaryType.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter a summary type to generate suggestions.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      // Generate a unique, relevant summary - using our existing AI generator
+      // but passing the user's specific role request
+      const summary = generateAiBioSuggestion(summaryType);
+      setGeneratedSummary(summary);
+      incrementAiSuggestions(); // Track AI usage
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      toast({
+        title: "Generation Failed",
+        description: "We couldn't create a summary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSelectSummary = () => {
     setFormValues({
       ...formValues,
       personalDetails: {
         ...formValues.personalDetails,
-        bio: suggestion
+        bio: generatedSummary
       }
     });
+    setShowSuggestionBox(false);
     
     toast({
-      title: "Bio Updated",
-      description: "The AI-generated bio has been applied to your resume.",
+      title: "Summary Applied",
+      description: "The generated summary has been added to your resume.",
     });
   };
   
-  const handleRegenerateSuggestion = (index: number) => {
-    const jobTitle = formValues.experience[0]?.jobTitle || '';
-    const newSuggestion = generateAiBioSuggestion(jobTitle);
-    
-    const updatedSuggestions = [...bioSuggestions];
-    updatedSuggestions[index] = newSuggestion;
-    setBioSuggestions(updatedSuggestions);
-  };
-
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Personal Information</h2>
+    <div className="space-y-6 animate-fade-in">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Personal Information</h2>
+        <p className="text-muted-foreground mb-6">
+          Let's start with some basic information about you.
+        </p>
+      </div>
       
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="fullName" className="mb-2 block">
-              Full Name <span className="text-destructive">*</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="fullName" className="mb-2 block">
+            Full Name <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="fullName"
+            value={formValues.fullName}
+            onChange={handleFullNameChange}
+            placeholder="e.g. John Doe"
+            required
+          />
+        </div>
+        
+        <div>
+          <Label className="mb-2 block">Profile Image</Label>
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              {formValues.profileImageUrl ? (
+                <AvatarImage src={formValues.profileImageUrl} alt="Profile picture" />
+              ) : (
+                <AvatarFallback className="text-lg">
+                  {formValues.fullName ? formValues.fullName.charAt(0).toUpperCase() : "?"}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            
+            <Label 
+              htmlFor="profile-image" 
+              className="cursor-pointer bg-secondary hover:bg-secondary/80 text-secondary-foreground px-4 py-2 rounded-md text-sm transition-colors"
+            >
+              Upload Image
+              <Input
+                id="profile-image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
             </Label>
-            <Input
-              id="fullName"
-              type="text"
-              placeholder="John Doe"
-              value={formValues.fullName}
-              onChange={handleFullNameChange}
-              required
-            />
           </div>
+        </div>
+        
+        <div className="md:col-span-2">
+          <Label htmlFor="bio" className="mb-2 block">
+            Professional Summary
+          </Label>
+          <Textarea
+            id="bio"
+            value={formValues.personalDetails.bio}
+            onChange={handleBioChange}
+            placeholder="Write a brief summary about your professional experience and skills..."
+            rows={4}
+          />
           
-          <div>
-            <Label htmlFor="profileImage" className="mb-2 block">
-              Profile Image
-            </Label>
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0">
-                {formValues.profileImageUrl ? (
-                  <div className="w-16 h-16 rounded-full overflow-hidden border">
-                    <img
-                      src={formValues.profileImageUrl}
-                      alt={formValues.fullName || "Profile"}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                    <Upload className="h-6 w-6 text-muted-foreground" />
+          <div className="mt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSuggestionBox(!showSuggestionBox)}
+              className="mt-2 flex items-center gap-1.5"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Get Suggestions with AI
+            </Button>
+            
+            {showSuggestionBox && (
+              <div className="mt-4 p-4 border rounded-md bg-card">
+                <Label htmlFor="summary-type" className="mb-2 block">
+                  Enter Summary Type (e.g., Software Engineer with leadership focus)
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="summary-type"
+                    value={summaryType}
+                    onChange={(e) => setSummaryType(e.target.value)}
+                    placeholder="e.g. Marketing Manager with e-commerce focus"
+                  />
+                  <Button 
+                    onClick={handleGenerateSummary}
+                    disabled={isGenerating}
+                    variant="secondary"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      'Generate'
+                    )}
+                  </Button>
+                </div>
+                
+                {generatedSummary && (
+                  <div className="mt-4">
+                    <Label className="mb-2 block text-sm font-medium">Generated Summary:</Label>
+                    <div className="p-3 bg-muted/50 rounded-md text-sm">
+                      {generatedSummary}
+                    </div>
+                    <Button 
+                      onClick={handleSelectSummary}
+                      size="sm"
+                      className="mt-3"
+                    >
+                      Use This Summary
+                    </Button>
                   </div>
                 )}
               </div>
-              <div className="flex-grow">
-                <Input
-                  id="profileImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileImageChange}
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Recommended: Square image, max 5MB
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
         
         <div>
-          <div className="flex justify-between items-center mb-2">
-            <Label htmlFor="bio" className="block">
-              Professional Summary
-            </Label>
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="sm" 
-              onClick={handleGenerateBioSuggestions}
-              disabled={isGeneratingSuggestions}
-              className="flex items-center gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              {isGeneratingSuggestions ? "Generating..." : "Get AI Suggestions"}
-            </Button>
-          </div>
-          <Textarea
-            id="bio"
-            placeholder="Write a brief summary about yourself and your professional background..."
-            value={formValues.personalDetails.bio}
-            onChange={handleBioChange}
-            className="min-h-[120px]"
-          />
-          
-          {bioSuggestions.length > 0 && (
-            <div className="mt-4 space-y-3">
-              <h3 className="text-sm font-medium">AI-Generated Suggestions:</h3>
-              <div className="grid gap-3">
-                {bioSuggestions.map((suggestion, index) => (
-                  <Card key={index} className="p-3 hover:shadow-md transition-shadow">
-                    <div className="text-sm">{suggestion}</div>
-                    <div className="flex justify-end gap-2 mt-2">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => handleRegenerateSuggestion(index)}
-                        aria-label="Generate a new suggestion"
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleUseSuggestion(suggestion)}
-                      >
-                        Use This
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="dateOfBirth" className="mb-2 block">
-              Date of Birth
-            </Label>
-            <Input
-              id="dateOfBirth"
-              type="date"
-              value={formValues.personalDetails.dateOfBirth}
-              onChange={handleDateOfBirthChange}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="nationality" className="mb-2 block">
-              Nationality
-            </Label>
-            <Input
-              id="nationality"
-              type="text"
-              placeholder="e.g. American, Canadian, etc."
-              value={formValues.personalDetails.nationality}
-              onChange={handleNationalityChange}
-            />
-          </div>
-        </div>
-        
-        <div>
-          <Label htmlFor="address" className="mb-2 block">
-            Location/Address
+          <Label htmlFor="dateOfBirth" className="mb-2 block">
+            Date of Birth
           </Label>
           <Input
+            id="dateOfBirth"
+            type="date"
+            value={formValues.personalDetails.dateOfBirth}
+            onChange={handleDateOfBirthChange}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="nationality" className="mb-2 block">
+            Nationality
+          </Label>
+          <Input
+            id="nationality"
+            value={formValues.personalDetails.nationality}
+            onChange={handleNationalityChange}
+            placeholder="e.g. American"
+          />
+        </div>
+        
+        <div className="md:col-span-2">
+          <Label htmlFor="address" className="mb-2 block">
+            Address
+          </Label>
+          <Textarea
             id="address"
-            type="text"
-            placeholder="City, State, Country"
             value={formValues.personalDetails.address}
             onChange={handleAddressChange}
+            placeholder="e.g. 123 Main St, City, Country"
+            rows={2}
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            You don't need to include your full address, just city and country is fine
-          </p>
         </div>
+      </div>
+      
+      <div className="mt-6">
+        <h3 className="text-lg font-medium mb-4">Personal Information Tips:</h3>
+        <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+          <li>Use your legal name as it would appear on official documents</li>
+          <li>Choose a recent, professional photo with a neutral background</li>
+          <li>Keep your professional summary concise and focused on your career highlights</li>
+          <li>Date of birth is optional and can be omitted in many countries</li>
+          <li>For the address, consider including just the city and state/country for privacy</li>
+        </ul>
       </div>
     </div>
   );

@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CurrencySelect } from '@/components/CurrencySelect';
 import { formatSalary } from '@/lib/date-utils';
+import { useState } from 'react';
 
 export const PreferencesForm = () => {
   const { formValues, setFormValues } = useResume();
+  const [currency, setCurrency] = useState(formValues.workPreferences.salaryCurrency || 'USD');
   
   const handleJobTypeChange = (value: string) => {
     setFormValues({
@@ -50,6 +52,7 @@ export const PreferencesForm = () => {
   };
   
   const handleCurrencyChange = (value: string) => {
+    setCurrency(value);
     setFormValues({
       ...formValues,
       workPreferences: {
@@ -153,6 +156,8 @@ export const PreferencesForm = () => {
             <CurrencySelect
               label=""
               className="w-24"
+              value={currency}
+              onChange={handleCurrencyChange}
             />
           </div>
           {formValues.workPreferences.salaryExpectation && formValues.workPreferences.salaryCurrency && (
