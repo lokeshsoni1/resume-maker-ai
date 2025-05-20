@@ -1,8 +1,10 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useResume } from '@/contexts/ResumeContext';
 import { toast } from '@/components/ui/use-toast';
 import { Icons } from '@/components/ui/icons';
+import { Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
