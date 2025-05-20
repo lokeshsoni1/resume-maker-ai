@@ -92,97 +92,123 @@ export const ResumePreview = () => {
           </Button>
         </div>
         
-        <div className="resume-container bg-white shadow-lg rounded-lg overflow-hidden mb-8" style={{ backgroundColor: '#FFFFFF' }}>
-          <div className={`resume-content ${getThemeClass()}`} id="resume-content">
-            <header className="resume-header">
+        <div className="resume-container bg-white shadow-lg rounded-lg overflow-hidden mb-8 max-w-4xl mx-auto border">
+          <div 
+            className={`resume-content ${getThemeClass()}`} 
+            id="resume-content" 
+            style={{ backgroundColor: '#FFFFFF' }}
+          >
+            <header className="resume-header p-6 border-b">
               <div className="profile-image">
                 {formValues.profileImageUrl && (
-                  <img src={formValues.profileImageUrl} alt="Profile" />
+                  <img 
+                    src={formValues.profileImageUrl} 
+                    alt="Profile" 
+                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                  />
                 )}
               </div>
               <div className="header-content">
-                <h1>{formValues.fullName}</h1>
-                <p className="bio">{formValues.personalDetails.bio}</p>
-                <ul className="contact-info">
-                  <li>Email: {formValues.contactInformation.email}</li>
-                  <li>Phone: {formValues.contactInformation.phone}</li>
-                  <li>Address: {formValues.personalDetails.address}</li>
+                <h1 className="text-3xl font-bold text-primary mb-2">{formValues.fullName}</h1>
+                <p className="bio text-muted-foreground mb-4">{formValues.personalDetails.bio}</p>
+                <ul className="contact-info grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <span className="font-semibold">Email:</span> {formValues.contactInformation.email}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="font-semibold">Phone:</span> {formValues.contactInformation.phone}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="font-semibold">Address:</span> {formValues.personalDetails.address}
+                  </li>
                 </ul>
               </div>
             </header>
             
-            <section className="experience-section">
-              <h2>Experience</h2>
+            <section className="experience-section p-6 border-b">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Experience</h2>
               {formValues.experience.map((exp) => (
-                <div key={exp.id} className="experience-item">
-                  <h3>{exp.jobTitle} at {exp.company}</h3>
-                  <p className="dates">
+                <div key={exp.id} className="experience-item mb-5">
+                  <h3 className="font-medium text-lg">{exp.jobTitle} at {exp.company}</h3>
+                  <p className="dates text-sm text-muted-foreground mb-1">
                     {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                   </p>
-                  <p className="location">{exp.location}</p>
-                  <p className="description">{exp.description}</p>
+                  <p className="location text-sm mb-2">{exp.location}</p>
+                  <p className="description text-sm leading-relaxed">{exp.description}</p>
                 </div>
               ))}
             </section>
             
-            <section className="education-section">
-              <h2>Education</h2>
+            <section className="education-section p-6 border-b">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Education</h2>
               {formValues.education.map((edu) => (
-                <div key={edu.id} className="education-item">
-                  <h3>{edu.degree} at {edu.institution}</h3>
-                  <p className="dates">
+                <div key={edu.id} className="education-item mb-5">
+                  <h3 className="font-medium text-lg">{edu.degree} at {edu.institution}</h3>
+                  <p className="dates text-sm text-muted-foreground mb-1">
                     {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                   </p>
-                  <p className="location">{edu.location}</p>
-                  <p className="gpa">GPA: {edu.gpa}</p>
+                  <p className="location text-sm mb-1">{edu.location}</p>
+                  <p className="gpa text-sm">GPA: {edu.gpa}</p>
                 </div>
               ))}
             </section>
             
-            <section className="projects-section">
-              <h2>Projects</h2>
+            <section className="projects-section p-6 border-b">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Projects</h2>
               {formValues.projects.map((project) => (
-                <div key={project.id} className="project-item">
-                  <h3>{project.title}</h3>
-                  <p className="description">{project.description}</p>
-                  <p className="technologies">Technologies: {project.technologies}</p>
-                  <a href={project.link} target="_blank" rel="noopener noreferrer">
+                <div key={project.id} className="project-item mb-5">
+                  <h3 className="font-medium text-lg">{project.title}</h3>
+                  <p className="description text-sm mb-2">{project.description}</p>
+                  <p className="technologies text-sm mb-2">
+                    <span className="font-semibold">Technologies:</span> {project.technologies}
+                  </p>
+                  <a 
+                    href={project.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-sm text-primary hover:underline"
+                  >
                     View Project
                   </a>
                 </div>
               ))}
             </section>
             
-            <section className="skills-section">
-              <h2>Skills</h2>
-              <div className="skills-list">
+            <section className="skills-section p-6 border-b">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Skills</h2>
+              <div className="skills-list flex flex-wrap gap-2">
                 {formValues.skills.map((skill, index) => (
                   <Badge key={index} className="skill-badge">{skill}</Badge>
                 ))}
               </div>
             </section>
             
-            <section className="certifications-section">
-              <h2>Certifications</h2>
+            <section className="certifications-section p-6 border-b">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Certifications</h2>
               {formValues.certifications.map((cert) => (
-                <div key={cert.id} className="certification-item">
-                  <h3>{cert.name}</h3>
-                  <p className="issuer">Issuer: {cert.issuer}</p>
-                  <p className="date">Date: {getFormattedDate(cert.date)}</p>
-                  <a href={cert.link} target="_blank" rel="noopener noreferrer">
+                <div key={cert.id} className="certification-item mb-5">
+                  <h3 className="font-medium text-lg">{cert.name}</h3>
+                  <p className="issuer text-sm mb-1"><span className="font-semibold">Issuer:</span> {cert.issuer}</p>
+                  <p className="date text-sm mb-2"><span className="font-semibold">Date:</span> {getFormattedDate(cert.date)}</p>
+                  <a 
+                    href={cert.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline" 
+                  >
                     View Certification
                   </a>
                 </div>
               ))}
             </section>
             
-            <section className="preferences-section">
-              <h2>Work Preferences</h2>
-              <p>Job Type: {formValues.workPreferences.jobType}</p>
-              <p>Work Mode: {formValues.workPreferences.workMode}</p>
-              <p>Industry: {formValues.workPreferences.industry}</p>
-              <p>
-                Salary Expectation: {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
+            <section className="preferences-section p-6">
+              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Work Preferences</h2>
+              <p className="text-sm mb-2"><span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}</p>
+              <p className="text-sm mb-2"><span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}</p>
+              <p className="text-sm mb-2"><span className="font-semibold">Industry:</span> {formValues.workPreferences.industry}</p>
+              <p className="text-sm">
+                <span className="font-semibold">Salary Expectation:</span> {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
               </p>
             </section>
           </div>

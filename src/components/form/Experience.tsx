@@ -19,6 +19,7 @@ export const ExperienceForm = () => {
     suggestions: []
   });
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const [jobType, setJobType] = useState('');
   
   const handleAddExperience = () => {
     setFormValues({
@@ -129,6 +130,9 @@ export const ExperienceForm = () => {
         index,
         suggestions
       });
+      
+      // Set the job type based on the current job title
+      setJobType(jobTitle);
     } catch (error) {
       console.error('Error generating suggestions:', error);
       toast({
@@ -162,6 +166,35 @@ export const ExperienceForm = () => {
     
     setDescriptionSuggestions({
       index: expIndex,
+      suggestions: updatedSuggestions
+    });
+  };
+
+  // New function to handle job type input change
+  const handleJobTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setJobType(e.target.value);
+  };
+
+  // New function to generate job description based on type
+  const handleGenerateJobDescription = () => {
+    if (!jobType || descriptionSuggestions.index === -1) {
+      toast({
+        title: "Input Error",
+        description: "Please enter a job type and select an experience first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Generate a unique job description based on the input job type
+    const customSuggestion = generateAiExperienceSuggestion(jobType);
+    
+    // Add this suggestion to the existing ones
+    const updatedSuggestions = [...descriptionSuggestions.suggestions];
+    updatedSuggestions.push(customSuggestion);
+    
+    setDescriptionSuggestions({
+      ...descriptionSuggestions,
       suggestions: updatedSuggestions
     });
   };
@@ -307,6 +340,36 @@ export const ExperienceForm = () => {
               {descriptionSuggestions.index === index && descriptionSuggestions.suggestions.length > 0 && (
                 <div className="mt-4 space-y-3">
                   <h3 className="text-sm font-medium">AI-Generated Suggestions:</h3>
+                  
+                  {/* Job type input field and generate button */}
+                  <Card className="p-3">
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="job-type-input" className="text-sm font-medium">
+                          Enter Job Type for More Suggestions
+                        </Label>
+                        <div className="flex gap-2">
+                          <Input
+                            id="job-type-input"
+                            value={jobType}
+                            onChange={handleJobTypeChange}
+                            placeholder="e.g., Software Engineer, Project Manager"
+                            className="flex-1"
+                          />
+                          <Button 
+                            type="button"
+                            onClick={handleGenerateJobDescription}
+                            disabled={!jobType}
+                            className="flex items-center gap-2"
+                          >
+                            <Sparkles className="h-4 w-4" />
+                            Generate
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                  
                   <div className="grid gap-3">
                     {descriptionSuggestions.suggestions.map((suggestion, i) => (
                       <Card key={i} className="p-3 hover:shadow-md transition-shadow">
