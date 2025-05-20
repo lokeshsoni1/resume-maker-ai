@@ -10,7 +10,7 @@ import { toast } from '@/components/ui/use-toast';
 import { Icons } from '@/components/ui/icons';
 import html2canvas from 'html2canvas';
 
-// Import our download options component at the top of the file
+// Import our download options component
 import { DownloadOptions } from '@/components/DownloadOptions';
 
 export const ResumePreview = () => {
@@ -92,13 +92,20 @@ export const ResumePreview = () => {
           </Button>
         </div>
         
-        <div className="resume-container bg-white shadow-lg rounded-lg overflow-hidden mb-8 max-w-4xl mx-auto border">
+        <div className="resume-container mx-auto mb-8 max-w-4xl shadow-lg rounded-lg overflow-hidden border">
           <div 
             className={`resume-content ${getThemeClass()}`} 
             id="resume-content" 
-            style={{ backgroundColor: '#FFFFFF' }}
+            style={{ 
+              backgroundColor: '#FFFFFF',
+              width: '794px', // A4 width at 96 DPI
+              minHeight: '1123px', // A4 height at 96 DPI
+              margin: '0 auto',
+              padding: '48px',
+              boxSizing: 'border-box'
+            }}
           >
-            <header className="resume-header p-6 border-b">
+            <header className="resume-header border-b mb-6 pb-4">
               <div className="profile-image">
                 {formValues.profileImageUrl && (
                   <img 
@@ -125,7 +132,7 @@ export const ResumePreview = () => {
               </div>
             </header>
             
-            <section className="experience-section p-6 border-b">
+            <section className="experience-section pb-6 border-b">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Experience</h2>
               {formValues.experience.map((exp) => (
                 <div key={exp.id} className="experience-item mb-5">
@@ -139,7 +146,7 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="education-section p-6 border-b">
+            <section className="education-section py-6 border-b">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Education</h2>
               {formValues.education.map((edu) => (
                 <div key={edu.id} className="education-item mb-5">
@@ -153,7 +160,7 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="projects-section p-6 border-b">
+            <section className="projects-section py-6 border-b">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Projects</h2>
               {formValues.projects.map((project) => (
                 <div key={project.id} className="project-item mb-5">
@@ -174,7 +181,7 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="skills-section p-6 border-b">
+            <section className="skills-section py-6 border-b">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Skills</h2>
               <div className="skills-list flex flex-wrap gap-2">
                 {formValues.skills.map((skill, index) => (
@@ -183,7 +190,7 @@ export const ResumePreview = () => {
               </div>
             </section>
             
-            <section className="certifications-section p-6 border-b">
+            <section className="certifications-section py-6 border-b">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Certifications</h2>
               {formValues.certifications.map((cert) => (
                 <div key={cert.id} className="certification-item mb-5">
@@ -202,7 +209,7 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="preferences-section p-6">
+            <section className="preferences-section py-6">
               <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Work Preferences</h2>
               <p className="text-sm mb-2"><span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}</p>
               <p className="text-sm mb-2"><span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}</p>

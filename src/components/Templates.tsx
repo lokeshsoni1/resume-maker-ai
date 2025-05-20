@@ -62,6 +62,31 @@ export const Templates = () => {
   // Combined templates list (standard + AI-generated)
   const allTemplates = [...availableTemplates, ...generatedTemplates];
 
+  // Define distinct visual styles for each template preview
+  const getTemplatePreviewStyle = (template: ResumeTemplate) => {
+    switch(template.id) {
+      case 'modern':
+        return { color: '#1a202c', layout: 'single-column', border: 'none' };
+      case 'professional':
+        return { color: '#2d3748', layout: 'two-column', border: 'border-l-4 pl-2' };
+      case 'creative':
+        return { color: '#e53e3e', layout: 'single-column', border: 'border-t-2 pt-2' };
+      case 'minimalist':
+        return { color: '#000000', layout: 'single-column', border: 'none' };
+      case 'executive':
+        return { color: '#2b6cb0', layout: 'two-column', border: 'border-b-2 pb-1' };
+      case 'tech':
+        return { color: '#1a5276', layout: 'hybrid', border: 'border-l-2 pl-3' };
+      default:
+        // For AI-generated templates
+        return { 
+          color: template.color || '#9b87f5',
+          layout: template.layout || 'single-column',
+          border: 'border rounded-md p-1'
+        };
+    }
+  };
+
   return (
     <section id="templates" className="py-20 px-4 bg-muted/30">
       <div className="container mx-auto max-w-6xl">
@@ -88,106 +113,110 @@ export const Templates = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {allTemplates.map((template) => (
-            <div
-              key={template.id}
-              className={`rounded-xl overflow-hidden glass-card transition-all duration-300 ${
-                selectedTemplate.id === template.id
-                  ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
-                  : ''
-              }`}
-            >
-              <div className="h-52 bg-card flex items-center justify-center overflow-hidden">
-                <div 
-                  className="w-32 h-44 border border-border/20 rounded-md shadow-lg flex flex-col"
-                  style={{ backgroundColor: template.color + '20' }}
-                >
+          {allTemplates.map((template) => {
+            const previewStyle = getTemplatePreviewStyle(template);
+            
+            return (
+              <div
+                key={template.id}
+                className={`rounded-xl overflow-hidden glass-card transition-all duration-300 ${
+                  selectedTemplate.id === template.id
+                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                    : ''
+                }`}
+              >
+                <div className="h-52 bg-card flex items-center justify-center overflow-hidden">
                   <div 
-                    className="h-3 w-full"
-                    style={{ backgroundColor: template.color }}
-                  ></div>
-                  <div className="flex-1 p-2">
-                    <div className="w-full h-3 bg-foreground/10 rounded mb-1"></div>
-                    <div className="w-2/3 h-2 bg-foreground/10 rounded mb-3"></div>
-                    
-                    <div className="w-full h-px bg-foreground/10 my-2"></div>
-                    
-                    {template.layout === 'single-column' ? (
-                      <>
-                        <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                        <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                        <div className="w-4/5 h-2 bg-foreground/10 rounded mb-2"></div>
-                        
-                        <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                        <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                        <div className="w-3/5 h-2 bg-foreground/10 rounded"></div>
-                      </>
-                    ) : template.layout === 'two-column' ? (
-                      <div className="flex gap-1">
-                        <div className="w-1/3">
+                    className="w-32 h-44 border border-border/20 rounded-md shadow-lg flex flex-col"
+                    style={{ backgroundColor: '#FFFFFF' }}
+                  >
+                    <div 
+                      className="h-3 w-full"
+                      style={{ backgroundColor: template.color }}
+                    ></div>
+                    <div className="flex-1 p-2">
+                      <div className="w-full h-3 bg-foreground/10 rounded mb-1"></div>
+                      <div className="w-2/3 h-2 bg-foreground/10 rounded mb-3"></div>
+                      
+                      <div className="w-full h-px bg-foreground/10 my-2"></div>
+                      
+                      {previewStyle.layout === 'single-column' ? (
+                        <>
                           <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
                           <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-4/5 h-2 bg-foreground/10 rounded"></div>
+                          <div className="w-4/5 h-2 bg-foreground/10 rounded mb-2"></div>
+                          
+                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                          <div className="w-3/5 h-2 bg-foreground/10 rounded"></div>
+                        </>
+                      ) : previewStyle.layout === 'two-column' ? (
+                        <div className="flex gap-1">
+                          <div className="w-1/3">
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-4/5 h-2 bg-foreground/10 rounded"></div>
+                          </div>
+                          <div className="w-2/3">
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-4/5 h-2 bg-foreground/10 rounded"></div>
+                          </div>
                         </div>
-                        <div className="w-2/3">
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-4/5 h-2 bg-foreground/10 rounded"></div>
+                      ) : (
+                        <div className="flex gap-1">
+                          <div className="w-1/3">
+                            <div className="w-full h-6 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                          </div>
+                          <div className="w-2/3">
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
+                            <div className="w-full h-2 bg-foreground/10 rounded"></div>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="flex gap-1">
-                        <div className="w-1/3">
-                          <div className="w-full h-6 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                        </div>
-                        <div className="w-2/3">
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded mb-1"></div>
-                          <div className="w-full h-2 bg-foreground/10 rounded"></div>
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-medium">
-                    {template.name}
-                    {template.id.startsWith('ai-') && (
-                      <span className="ml-2 px-1.5 py-0.5 text-xs bg-primary/20 text-primary rounded-full">AI</span>
-                    )}
-                  </h3>
-                  <div 
-                    className="h-4 w-4 rounded-full"
-                    style={{ backgroundColor: template.color }}
-                  ></div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-medium">
+                      {template.name}
+                      {template.id.startsWith('ai-') && (
+                        <span className="ml-2 px-1.5 py-0.5 text-xs bg-primary/20 text-primary rounded-full">AI</span>
+                      )}
+                    </h3>
+                    <div 
+                      className="h-4 w-4 rounded-full"
+                      style={{ backgroundColor: template.color }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-foreground/70 mb-4">
+                    {template.id.startsWith('ai-') 
+                      ? 'Custom AI-generated template with unique styling and layout.'
+                      : template.layout === 'single-column'
+                        ? 'Clean, single-column layout perfect for a focused presentation.'
+                        : template.layout === 'two-column'
+                        ? 'Two-column format with sidebar for compact, efficient design.'
+                        : 'Hybrid layout with creative elements and modern styling.'
+                    }
+                  </p>
+                  <Button
+                    variant={selectedTemplate.id === template.id ? "default" : "outline"}
+                    size="sm"
+                    className="w-full"
+                    onClick={() => handleTemplateSelect(template)}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    {selectedTemplate.id === template.id ? "Selected" : "Select Template"}
+                  </Button>
                 </div>
-                <p className="text-sm text-foreground/70 mb-4">
-                  {template.id.startsWith('ai-') 
-                    ? 'Custom AI-generated template with unique styling and layout.'
-                    : template.layout === 'single-column'
-                      ? 'Clean, single-column layout perfect for a focused presentation.'
-                      : template.layout === 'two-column'
-                      ? 'Two-column format with sidebar for compact, efficient design.'
-                      : 'Hybrid layout with creative elements and modern styling.'
-                  }
-                </p>
-                <Button
-                  variant={selectedTemplate.id === template.id ? "default" : "outline"}
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleTemplateSelect(template)}
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  {selectedTemplate.id === template.id ? "Selected" : "Select Template"}
-                </Button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-16 text-center">

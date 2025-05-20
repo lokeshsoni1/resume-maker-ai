@@ -170,12 +170,12 @@ export const ExperienceForm = () => {
     });
   };
 
-  // New function to handle job type input change
+  // Handle job type input change
   const handleJobTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setJobType(e.target.value);
   };
 
-  // New function to generate job description based on type
+  // Generate job description based on type
   const handleGenerateJobDescription = () => {
     if (!jobType || descriptionSuggestions.index === -1) {
       toast({
@@ -326,7 +326,7 @@ export const ExperienceForm = () => {
                   className="flex items-center gap-2"
                 >
                   <Sparkles className="h-4 w-4" />
-                  {isGeneratingSuggestions && descriptionSuggestions.index === index ? "Generating..." : "Get AI Suggestions"}
+                  {isGeneratingSuggestions && descriptionSuggestions.index === index ? "Generating..." : "Get Suggestions with AI"}
                 </Button>
               </div>
               <Textarea
