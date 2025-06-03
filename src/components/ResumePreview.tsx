@@ -15,12 +15,73 @@ import { DownloadOptions } from '@/components/DownloadOptions';
 
 export const ResumePreview = () => {
   const { formValues, generateAiTemplate } = useResume();
-  const { themes, currentTheme } = useTheme(); // Get theme from ThemeContext
+  const { themes, currentTheme } = useTheme();
   const [isGenerating, setIsGenerating] = useState(false);
   
-  const getThemeClass = () => {
+  // Enhanced template styles based on the 7 uploaded resume designs
+  const getTemplateClass = () => {
     const theme = themes.find(t => t.id === currentTheme);
     return theme ? theme.className : 'default-theme';
+  };
+
+  // Dynamic template styles inspired by the uploaded images
+  const getEnhancedTemplateStyles = () => {
+    const theme = themes.find(t => t.id === currentTheme);
+    if (!theme) return {};
+
+    // Template style variations inspired by the 7 uploaded images
+    const templateVariations = {
+      'modern': {
+        headerColor: '#1a202c',
+        accentColor: '#4a5568',
+        font: 'Inter',
+        layout: 'single-column',
+        borderStyle: 'border-b-2',
+        sectionSpacing: 'mb-6'
+      },
+      'professional': {
+        headerColor: '#2d3748',
+        accentColor: '#718096',
+        font: 'Times New Roman',
+        layout: 'two-column',
+        borderStyle: 'border-l-4 border-l-blue-600',
+        sectionSpacing: 'mb-8'
+      },
+      'creative': {
+        headerColor: '#e53e3e',
+        accentColor: '#fc8181',
+        font: 'Montserrat',
+        layout: 'creative-blocks',
+        borderStyle: 'border-t-4 border-t-orange-500',
+        sectionSpacing: 'mb-5'
+      },
+      'minimalist': {
+        headerColor: '#000000',
+        accentColor: '#4a4a4a',
+        font: 'Arial',
+        layout: 'clean-minimal',
+        borderStyle: 'border-none',
+        sectionSpacing: 'mb-4'
+      },
+      'executive': {
+        headerColor: '#2b6cb0',
+        accentColor: '#90cdf4',
+        font: 'Garamond',
+        layout: 'executive-sidebar',
+        borderStyle: 'border-b-2 border-b-blue-800',
+        sectionSpacing: 'mb-7'
+      },
+      'tech': {
+        headerColor: '#1a5276',
+        accentColor: '#5dade2',
+        font: 'Fira Code',
+        layout: 'tech-grid',
+        borderStyle: 'border-l-2 border-l-cyan-600',
+        sectionSpacing: 'mb-6'
+      }
+    };
+
+    return templateVariations[theme.id] || templateVariations['modern'];
   };
   
   const handleGenerateAiTemplate = async () => {
@@ -50,6 +111,8 @@ export const ResumePreview = () => {
       setIsGenerating(false);
     }
   };
+
+  const templateStyles = getEnhancedTemplateStyles();
   
   return (
     <section id="resume-preview" className="py-12">
@@ -92,9 +155,10 @@ export const ResumePreview = () => {
           </Button>
         </div>
         
-        <div className="resume-container mx-auto mb-8 max-w-4xl shadow-lg rounded-lg overflow-hidden border">
+        {/* Enhanced A4 Resume Preview Container */}
+        <div className="resume-container mx-auto mb-8 max-w-4xl shadow-2xl rounded-lg overflow-hidden border border-gray-200">
           <div 
-            className={`resume-content ${getThemeClass()}`} 
+            className={`resume-content ${getTemplateClass()}`} 
             id="resume-content" 
             style={{ 
               backgroundColor: '#FFFFFF',
@@ -102,78 +166,158 @@ export const ResumePreview = () => {
               minHeight: '1123px', // A4 height at 96 DPI
               margin: '0 auto',
               padding: '48px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              fontFamily: templateStyles.font || 'Inter',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              color: '#000000'
             }}
           >
-            <header className="resume-header border-b mb-6 pb-4">
-              <div className="profile-image">
-                {formValues.profileImageUrl && (
-                  <img 
-                    src={formValues.profileImageUrl} 
-                    alt="Profile" 
-                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
-                  />
-                )}
-              </div>
-              <div className="header-content">
-                <h1 className="text-3xl font-bold text-primary mb-2">{formValues.fullName}</h1>
-                <p className="bio text-muted-foreground mb-4">{formValues.personalDetails.bio}</p>
-                <ul className="contact-info grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <span className="font-semibold">Email:</span> {formValues.contactInformation.email}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="font-semibold">Phone:</span> {formValues.contactInformation.phone}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="font-semibold">Address:</span> {formValues.personalDetails.address}
-                  </li>
-                </ul>
+            {/* Enhanced Header Section */}
+            <header className={`resume-header ${templateStyles.borderStyle} mb-6 pb-6`}>
+              <div className="flex items-start gap-6">
+                <div className="profile-image">
+                  {formValues.profileImageUrl && (
+                    <img 
+                      src={formValues.profileImageUrl} 
+                      alt="Profile" 
+                      className="w-32 h-32 rounded-full object-cover border-4 shadow-lg"
+                      style={{ borderColor: templateStyles.headerColor }}
+                    />
+                  )}
+                </div>
+                <div className="header-content flex-1">
+                  <h1 
+                    className="text-4xl font-bold mb-3" 
+                    style={{ 
+                      color: templateStyles.headerColor,
+                      fontFamily: templateStyles.font 
+                    }}
+                  >
+                    {formValues.fullName || 'Your Name'}
+                  </h1>
+                  <p 
+                    className="text-lg mb-4" 
+                    style={{ color: templateStyles.accentColor }}
+                  >
+                    {formValues.personalDetails.bio || 'Professional Title'}
+                  </p>
+                  <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Email:</span> 
+                      <span>{formValues.contactInformation.email || 'email@example.com'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Phone:</span> 
+                      <span>{formValues.contactInformation.phone || '(123) 456-7890'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 md:col-span-2">
+                      <span className="font-semibold">Address:</span> 
+                      <span>{formValues.personalDetails.address || '123 Street, City, State'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </header>
             
-            <section className="experience-section pb-6 border-b">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Experience</h2>
+            {/* Experience Section */}
+            <section className={`experience-section ${templateStyles.sectionSpacing} pb-6 border-b border-gray-200`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Professional Experience
+              </h2>
               {formValues.experience.map((exp) => (
-                <div key={exp.id} className="experience-item mb-5">
-                  <h3 className="font-medium text-lg">{exp.jobTitle} at {exp.company}</h3>
-                  <p className="dates text-sm text-muted-foreground mb-1">
-                    {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
+                <div key={exp.id} className="experience-item mb-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 
+                      className="font-bold text-xl" 
+                      style={{ color: templateStyles.headerColor }}
+                    >
+                      {exp.jobTitle}
+                    </h3>
+                    <span 
+                      className="text-sm font-medium" 
+                      style={{ color: templateStyles.accentColor }}
+                    >
+                      {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
+                    </span>
+                  </div>
+                  <p 
+                    className="font-semibold text-lg mb-1" 
+                    style={{ color: templateStyles.accentColor }}
+                  >
+                    {exp.company}
                   </p>
-                  <p className="location text-sm mb-2">{exp.location}</p>
-                  <p className="description text-sm leading-relaxed">{exp.description}</p>
+                  <p className="text-sm mb-2 italic">{exp.location}</p>
+                  <p className="text-sm leading-relaxed">{exp.description}</p>
                 </div>
               ))}
             </section>
             
-            <section className="education-section py-6 border-b">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Education</h2>
+            {/* Education Section */}
+            <section className={`education-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Education
+              </h2>
               {formValues.education.map((edu) => (
                 <div key={edu.id} className="education-item mb-5">
-                  <h3 className="font-medium text-lg">{edu.degree} at {edu.institution}</h3>
-                  <p className="dates text-sm text-muted-foreground mb-1">
-                    {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 
+                      className="font-bold text-lg" 
+                      style={{ color: templateStyles.headerColor }}
+                    >
+                      {edu.degree}
+                    </h3>
+                    <span 
+                      className="text-sm font-medium" 
+                      style={{ color: templateStyles.accentColor }}
+                    >
+                      {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
+                    </span>
+                  </div>
+                  <p 
+                    className="font-semibold mb-1" 
+                    style={{ color: templateStyles.accentColor }}
+                  >
+                    {edu.institution}
                   </p>
-                  <p className="location text-sm mb-1">{edu.location}</p>
-                  <p className="gpa text-sm">GPA: {edu.gpa}</p>
+                  <p className="text-sm mb-1">{edu.location}</p>
+                  <p className="text-sm">GPA: {edu.gpa}</p>
                 </div>
               ))}
             </section>
             
-            <section className="projects-section py-6 border-b">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Projects</h2>
+            {/* Projects Section */}
+            <section className={`projects-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Projects
+              </h2>
               {formValues.projects.map((project) => (
                 <div key={project.id} className="project-item mb-5">
-                  <h3 className="font-medium text-lg">{project.title}</h3>
-                  <p className="description text-sm mb-2">{project.description}</p>
-                  <p className="technologies text-sm mb-2">
+                  <h3 
+                    className="font-bold text-lg mb-2" 
+                    style={{ color: templateStyles.headerColor }}
+                  >
+                    {project.title}
+                  </h3>
+                  <p className="text-sm mb-2 leading-relaxed">{project.description}</p>
+                  <p className="text-sm mb-2">
                     <span className="font-semibold">Technologies:</span> {project.technologies}
                   </p>
                   <a 
                     href={project.link} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-sm text-primary hover:underline"
+                    className="text-sm hover:underline"
+                    style={{ color: templateStyles.headerColor }}
                   >
                     View Project
                   </a>
@@ -181,27 +325,55 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="skills-section py-6 border-b">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Skills</h2>
+            {/* Skills Section */}
+            <section className={`skills-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Skills
+              </h2>
               <div className="skills-list flex flex-wrap gap-2">
                 {formValues.skills.map((skill, index) => (
-                  <Badge key={index} className="skill-badge">{skill}</Badge>
+                  <Badge 
+                    key={index} 
+                    className="skill-badge text-white" 
+                    style={{ backgroundColor: templateStyles.accentColor }}
+                  >
+                    {skill}
+                  </Badge>
                 ))}
               </div>
             </section>
             
-            <section className="certifications-section py-6 border-b">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Certifications</h2>
+            {/* Certifications Section */}
+            <section className={`certifications-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Certifications
+              </h2>
               {formValues.certifications.map((cert) => (
                 <div key={cert.id} className="certification-item mb-5">
-                  <h3 className="font-medium text-lg">{cert.name}</h3>
-                  <p className="issuer text-sm mb-1"><span className="font-semibold">Issuer:</span> {cert.issuer}</p>
-                  <p className="date text-sm mb-2"><span className="font-semibold">Date:</span> {getFormattedDate(cert.date)}</p>
+                  <h3 
+                    className="font-bold text-lg mb-1" 
+                    style={{ color: templateStyles.headerColor }}
+                  >
+                    {cert.name}
+                  </h3>
+                  <p className="text-sm mb-1">
+                    <span className="font-semibold">Issuer:</span> {cert.issuer}
+                  </p>
+                  <p className="text-sm mb-2">
+                    <span className="font-semibold">Date:</span> {getFormattedDate(cert.date)}
+                  </p>
                   <a 
                     href={cert.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline" 
+                    className="text-sm hover:underline" 
+                    style={{ color: templateStyles.headerColor }}
                   >
                     View Certification
                   </a>
@@ -209,14 +381,28 @@ export const ResumePreview = () => {
               ))}
             </section>
             
-            <section className="preferences-section py-6">
-              <h2 className="text-xl font-semibold text-primary mb-4 uppercase tracking-wide">Work Preferences</h2>
-              <p className="text-sm mb-2"><span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}</p>
-              <p className="text-sm mb-2"><span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}</p>
-              <p className="text-sm mb-2"><span className="font-semibold">Industry:</span> {formValues.workPreferences.industry}</p>
-              <p className="text-sm">
-                <span className="font-semibold">Salary Expectation:</span> {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
-              </p>
+            {/* Work Preferences Section */}
+            <section className={`preferences-section ${templateStyles.sectionSpacing} py-6`}>
+              <h2 
+                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                style={{ color: templateStyles.headerColor }}
+              >
+                Work Preferences
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p className="text-sm">
+                  <span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold">Industry:</span> {formValues.workPreferences.industry}
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold">Salary:</span> {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
+                </p>
+              </div>
             </section>
           </div>
         </div>
