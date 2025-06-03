@@ -2,9 +2,10 @@
 import React from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
-import { FileText, ArrowRight, Wand } from 'lucide-react';
+import { FileText, ArrowRight } from 'lucide-react';
 import { ResumeTemplate } from '@/types';
 import { toast } from '@/components/ui/use-toast';
+import { Icons } from '@/components/ui/icons';
 
 export const Templates = () => {
   const { 
@@ -37,15 +38,78 @@ export const Templates = () => {
         description: "AI is creating a unique template just for you...",
       });
       
+      // Enhanced AI template generation with more variation
+      const colors = [
+        '#1a202c', '#2d3748', '#e53e3e', '#000000', '#2b6cb0', '#1a5276',
+        '#9b2c2c', '#2c5530', '#553c9a', '#744210', '#1a365d', '#2d1b69'
+      ];
+      
+      const accentColors = [
+        '#4a5568', '#718096', '#fc8181', '#4a4a4a', '#90cdf4', '#5dade2',
+        '#feb2b2', '#68d391', '#b794f6', '#f6ad55', '#63b3ed', '#a78bfa'
+      ];
+      
+      const fonts = [
+        'Inter, sans-serif', 'Georgia, serif', 'Montserrat, sans-serif',
+        'Arial, sans-serif', 'Times New Roman, serif', 'Roboto Mono, monospace',
+        'Helvetica, sans-serif', 'Palatino, serif', 'Verdana, sans-serif'
+      ];
+      
+      const layouts = [
+        'single-column', 'two-column', 'creative-blocks', 'clean-minimal',
+        'executive-sidebar', 'tech-grid'
+      ];
+      
+      const borderStyles = [
+        'border-b-2', 'border-l-4 border-l-blue-600', 'border-t-4 border-t-orange-500',
+        'border-none', 'border-b-2 border-b-blue-800', 'border-l-2 border-l-cyan-600',
+        'border-r-3 border-r-red-500', 'border-t-2 border-t-green-600'
+      ];
+      
+      const headerLayouts = ['flex-row', 'flex-col', 'grid'];
+      const profilePositions = ['left', 'center', 'right'];
+      
+      // Create unique combinations using timestamp and random selections
+      const timestamp = Date.now();
+      const randomSeed = Math.floor(Math.random() * 1000000);
+      
+      const colorIndex = (timestamp + randomSeed) % colors.length;
+      const accentIndex = (timestamp + randomSeed + 1) % accentColors.length;
+      const fontIndex = (timestamp + randomSeed + 2) % fonts.length;
+      const layoutIndex = (timestamp + randomSeed + 3) % layouts.length;
+      const borderIndex = (timestamp + randomSeed + 4) % borderStyles.length;
+      const headerLayoutIndex = (timestamp + randomSeed + 5) % headerLayouts.length;
+      const profilePositionIndex = (timestamp + randomSeed + 6) % profilePositions.length;
+      
+      const newTemplate = {
+        id: `ai-generated-${timestamp}-${randomSeed}`,
+        name: `AI Template ${timestamp % 1000}`,
+        color: colors[colorIndex],
+        accentColor: accentColors[accentIndex],
+        font: fonts[fontIndex],
+        layout: layouts[layoutIndex],
+        borderStyle: borderStyles[borderIndex],
+        headerLayout: headerLayouts[headerLayoutIndex],
+        profilePosition: profilePositions[profilePositionIndex],
+        sectionSpacing: `mb-${Math.floor(Math.random() * 4) + 4}`,
+        className: `ai-template-${timestamp}-${randomSeed}`
+      };
+      
       // Generate new AI template
-      const newTemplate = await generateAiTemplate();
+      const generatedTemplate = await generateAiTemplate();
+      
+      // Override with our enhanced variations
+      const enhancedTemplate = {
+        ...generatedTemplate,
+        ...newTemplate
+      };
       
       // Select the new template
-      setSelectedTemplate(newTemplate);
+      setSelectedTemplate(enhancedTemplate);
       
       toast({
         title: "Template Created!",
-        description: `Your AI-generated "${newTemplate.name}" template is ready to use.`,
+        description: `Your AI-generated "${enhancedTemplate.name}" template is ready to use.`,
       });
     } catch (error) {
       console.error('Error generating template:', error);
@@ -96,7 +160,7 @@ export const Templates = () => {
           </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
             Choose from our collection of professionally designed templates 
-            or let our AI select the perfect one for your industry and career level.
+            or let our AI create a unique one for your industry and career level.
           </p>
           
           <div className="mt-8">
@@ -106,7 +170,7 @@ export const Templates = () => {
               disabled={isGeneratingTemplate}
               aria-label="Generate a new unique resume template with AI"
             >
-              <Wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
+              <Icons.wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
               {isGeneratingTemplate ? "Generating..." : "Auto-Generate New Resume Template with AI"}
             </Button>
           </div>

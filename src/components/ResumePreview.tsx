@@ -24,60 +24,72 @@ export const ResumePreview = () => {
     return theme ? theme.className : 'default-theme';
   };
 
-  // Dynamic template styles inspired by the uploaded images
+  // Dynamic template styles with significantly more variation
   const getEnhancedTemplateStyles = () => {
     const theme = themes.find(t => t.id === currentTheme);
     if (!theme) return {};
 
-    // Template style variations inspired by the 7 uploaded images
+    // Expanded template variations with more unique combinations
     const templateVariations = {
       'modern': {
         headerColor: '#1a202c',
         accentColor: '#4a5568',
-        font: 'Inter',
+        font: 'Inter, sans-serif',
         layout: 'single-column',
         borderStyle: 'border-b-2',
-        sectionSpacing: 'mb-6'
+        sectionSpacing: 'mb-6',
+        headerLayout: 'flex-row',
+        profilePosition: 'left'
       },
       'professional': {
         headerColor: '#2d3748',
         accentColor: '#718096',
-        font: 'Times New Roman',
+        font: 'Georgia, serif',
         layout: 'two-column',
         borderStyle: 'border-l-4 border-l-blue-600',
-        sectionSpacing: 'mb-8'
+        sectionSpacing: 'mb-8',
+        headerLayout: 'flex-col',
+        profilePosition: 'center'
       },
       'creative': {
         headerColor: '#e53e3e',
         accentColor: '#fc8181',
-        font: 'Montserrat',
+        font: 'Montserrat, sans-serif',
         layout: 'creative-blocks',
         borderStyle: 'border-t-4 border-t-orange-500',
-        sectionSpacing: 'mb-5'
+        sectionSpacing: 'mb-5',
+        headerLayout: 'grid',
+        profilePosition: 'right'
       },
       'minimalist': {
         headerColor: '#000000',
         accentColor: '#4a4a4a',
-        font: 'Arial',
+        font: 'Arial, sans-serif',
         layout: 'clean-minimal',
         borderStyle: 'border-none',
-        sectionSpacing: 'mb-4'
+        sectionSpacing: 'mb-4',
+        headerLayout: 'flex-row',
+        profilePosition: 'left'
       },
       'executive': {
         headerColor: '#2b6cb0',
         accentColor: '#90cdf4',
-        font: 'Garamond',
+        font: 'Times New Roman, serif',
         layout: 'executive-sidebar',
         borderStyle: 'border-b-2 border-b-blue-800',
-        sectionSpacing: 'mb-7'
+        sectionSpacing: 'mb-7',
+        headerLayout: 'flex-col',
+        profilePosition: 'center'
       },
       'tech': {
         headerColor: '#1a5276',
         accentColor: '#5dade2',
-        font: 'Fira Code',
+        font: 'Roboto Mono, monospace',
         layout: 'tech-grid',
         borderStyle: 'border-l-2 border-l-cyan-600',
-        sectionSpacing: 'mb-6'
+        sectionSpacing: 'mb-6',
+        headerLayout: 'grid',
+        profilePosition: 'right'
       }
     };
 
@@ -93,7 +105,7 @@ export const ResumePreview = () => {
         description: "AI is creating a unique template just for you...",
       });
       
-      // Generate new AI template
+      // Generate new AI template with truly unique variations
       const newTemplate = await generateAiTemplate();
       
       toast({
@@ -135,8 +147,8 @@ export const ResumePreview = () => {
               </>
             ) : (
               <>
-                <Icons.refreshCw className="h-4 w-4" />
-                Auto-Generate Resume Template with AI
+                <Icons.wand className="h-4 w-4" />
+                Auto-Generate New Resume Template with AI
               </>
             )}
           </Button>
@@ -155,54 +167,58 @@ export const ResumePreview = () => {
           </Button>
         </div>
         
-        {/* Enhanced A4 Resume Preview Container */}
-        <div className="resume-container mx-auto mb-8 max-w-4xl shadow-2xl rounded-lg overflow-hidden border border-gray-200">
+        {/* Fixed A4 Resume Preview Container */}
+        <div className="resume-container mx-auto mb-8 shadow-2xl rounded-lg overflow-hidden border border-gray-200">
           <div 
             className={`resume-content ${getTemplateClass()}`} 
             id="resume-content" 
             style={{ 
               backgroundColor: '#FFFFFF',
-              width: '794px', // A4 width at 96 DPI
-              minHeight: '1123px', // A4 height at 96 DPI
+              width: '794px', // Exact A4 width at 96 DPI
+              height: '1123px', // Exact A4 height at 96 DPI
               margin: '0 auto',
-              padding: '48px',
+              padding: '40px',
               boxSizing: 'border-box',
-              fontFamily: templateStyles.font || 'Inter',
+              fontFamily: templateStyles.font || 'Inter, sans-serif',
               fontSize: '14px',
-              lineHeight: '1.5',
-              color: '#000000'
+              lineHeight: '1.4',
+              color: '#000000',
+              overflow: 'hidden', // Prevent content overflow
+              position: 'relative'
             }}
           >
-            {/* Enhanced Header Section */}
-            <header className={`resume-header ${templateStyles.borderStyle} mb-6 pb-6`}>
-              <div className="flex items-start gap-6">
-                <div className="profile-image">
-                  {formValues.profileImageUrl && (
+            {/* Enhanced Header Section with Dynamic Layout */}
+            <header className={`resume-header ${templateStyles.borderStyle} mb-4 pb-4`}>
+              <div className={`flex items-start gap-4 ${templateStyles.headerLayout === 'flex-col' ? 'flex-col items-center text-center' : templateStyles.headerLayout === 'grid' ? 'grid grid-cols-3 gap-4' : 'flex-row'}`}>
+                {templateStyles.profilePosition === 'left' && formValues.profileImageUrl && (
+                  <div className="profile-image flex-shrink-0">
                     <img 
                       src={formValues.profileImageUrl} 
                       alt="Profile" 
-                      className="w-32 h-32 rounded-full object-cover border-4 shadow-lg"
+                      className="w-24 h-24 rounded-full object-cover border-2 shadow-md"
                       style={{ borderColor: templateStyles.headerColor }}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
+                
                 <div className="header-content flex-1">
                   <h1 
-                    className="text-4xl font-bold mb-3" 
+                    className="text-3xl font-bold mb-2" 
                     style={{ 
                       color: templateStyles.headerColor,
-                      fontFamily: templateStyles.font 
+                      fontFamily: templateStyles.font,
+                      fontSize: templateStyles.headerLayout === 'grid' ? '2.5rem' : '3rem'
                     }}
                   >
                     {formValues.fullName || 'Your Name'}
                   </h1>
                   <p 
-                    className="text-lg mb-4" 
+                    className="text-base mb-3" 
                     style={{ color: templateStyles.accentColor }}
                   >
                     {formValues.personalDetails.bio || 'Professional Title'}
                   </p>
-                  <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                  <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">Email:</span> 
                       <span>{formValues.contactInformation.email || 'email@example.com'}</span>
@@ -217,127 +233,140 @@ export const ResumePreview = () => {
                     </div>
                   </div>
                 </div>
+
+                {templateStyles.profilePosition === 'right' && formValues.profileImageUrl && (
+                  <div className="profile-image flex-shrink-0">
+                    <img 
+                      src={formValues.profileImageUrl} 
+                      alt="Profile" 
+                      className="w-24 h-24 rounded-full object-cover border-2 shadow-md"
+                      style={{ borderColor: templateStyles.headerColor }}
+                    />
+                  </div>
+                )}
+
+                {templateStyles.profilePosition === 'center' && formValues.profileImageUrl && (
+                  <div className="profile-image mx-auto">
+                    <img 
+                      src={formValues.profileImageUrl} 
+                      alt="Profile" 
+                      className="w-28 h-28 rounded-full object-cover border-2 shadow-md"
+                      style={{ borderColor: templateStyles.headerColor }}
+                    />
+                  </div>
+                )}
               </div>
             </header>
             
             {/* Experience Section */}
-            <section className={`experience-section ${templateStyles.sectionSpacing} pb-6 border-b border-gray-200`}>
+            <section className={`experience-section ${templateStyles.sectionSpacing} pb-4 border-b border-gray-200`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Professional Experience
               </h2>
-              {formValues.experience.map((exp) => (
-                <div key={exp.id} className="experience-item mb-6">
-                  <div className="flex justify-between items-start mb-2">
+              {formValues.experience.slice(0, 3).map((exp) => (
+                <div key={exp.id} className="experience-item mb-4">
+                  <div className="flex justify-between items-start mb-1">
                     <h3 
-                      className="font-bold text-xl" 
+                      className="font-bold text-base" 
                       style={{ color: templateStyles.headerColor }}
                     >
                       {exp.jobTitle}
                     </h3>
                     <span 
-                      className="text-sm font-medium" 
+                      className="text-xs font-medium" 
                       style={{ color: templateStyles.accentColor }}
                     >
                       {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                     </span>
                   </div>
                   <p 
-                    className="font-semibold text-lg mb-1" 
+                    className="font-semibold text-sm mb-1" 
                     style={{ color: templateStyles.accentColor }}
                   >
                     {exp.company}
                   </p>
-                  <p className="text-sm mb-2 italic">{exp.location}</p>
-                  <p className="text-sm leading-relaxed">{exp.description}</p>
+                  <p className="text-xs mb-1 italic">{exp.location}</p>
+                  <p className="text-xs leading-relaxed">{exp.description?.substring(0, 120)}...</p>
                 </div>
               ))}
             </section>
             
             {/* Education Section */}
-            <section className={`education-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+            <section className={`education-section ${templateStyles.sectionSpacing} py-4 border-b border-gray-200`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Education
               </h2>
-              {formValues.education.map((edu) => (
-                <div key={edu.id} className="education-item mb-5">
-                  <div className="flex justify-between items-start mb-2">
+              {formValues.education.slice(0, 2).map((edu) => (
+                <div key={edu.id} className="education-item mb-3">
+                  <div className="flex justify-between items-start mb-1">
                     <h3 
-                      className="font-bold text-lg" 
+                      className="font-bold text-sm" 
                       style={{ color: templateStyles.headerColor }}
                     >
                       {edu.degree}
                     </h3>
                     <span 
-                      className="text-sm font-medium" 
+                      className="text-xs font-medium" 
                       style={{ color: templateStyles.accentColor }}
                     >
                       {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                     </span>
                   </div>
                   <p 
-                    className="font-semibold mb-1" 
+                    className="font-semibold text-sm mb-1" 
                     style={{ color: templateStyles.accentColor }}
                   >
                     {edu.institution}
                   </p>
-                  <p className="text-sm mb-1">{edu.location}</p>
-                  <p className="text-sm">GPA: {edu.gpa}</p>
+                  <p className="text-xs mb-1">{edu.location}</p>
+                  <p className="text-xs">GPA: {edu.gpa}</p>
                 </div>
               ))}
             </section>
             
             {/* Projects Section */}
-            <section className={`projects-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+            <section className={`projects-section ${templateStyles.sectionSpacing} py-4 border-b border-gray-200`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Projects
               </h2>
-              {formValues.projects.map((project) => (
-                <div key={project.id} className="project-item mb-5">
+              {formValues.projects.slice(0, 2).map((project) => (
+                <div key={project.id} className="project-item mb-3">
                   <h3 
-                    className="font-bold text-lg mb-2" 
+                    className="font-bold text-sm mb-1" 
                     style={{ color: templateStyles.headerColor }}
                   >
                     {project.title}
                   </h3>
-                  <p className="text-sm mb-2 leading-relaxed">{project.description}</p>
-                  <p className="text-sm mb-2">
+                  <p className="text-xs mb-1 leading-relaxed">{project.description?.substring(0, 100)}...</p>
+                  <p className="text-xs mb-1">
                     <span className="font-semibold">Technologies:</span> {project.technologies}
                   </p>
-                  <a 
-                    href={project.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-sm hover:underline"
-                    style={{ color: templateStyles.headerColor }}
-                  >
-                    View Project
-                  </a>
                 </div>
               ))}
             </section>
             
             {/* Skills Section */}
-            <section className={`skills-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+            <section className={`skills-section ${templateStyles.sectionSpacing} py-4 border-b border-gray-200`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Skills
               </h2>
-              <div className="skills-list flex flex-wrap gap-2">
-                {formValues.skills.map((skill, index) => (
+              <div className="skills-list flex flex-wrap gap-1">
+                {formValues.skills.slice(0, 8).map((skill, index) => (
                   <Badge 
                     key={index} 
-                    className="skill-badge text-white" 
+                    className="skill-badge text-white text-xs py-1 px-2" 
                     style={{ backgroundColor: templateStyles.accentColor }}
                   >
                     {skill}
@@ -347,59 +376,50 @@ export const ResumePreview = () => {
             </section>
             
             {/* Certifications Section */}
-            <section className={`certifications-section ${templateStyles.sectionSpacing} py-6 border-b border-gray-200`}>
+            <section className={`certifications-section ${templateStyles.sectionSpacing} py-4 border-b border-gray-200`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Certifications
               </h2>
-              {formValues.certifications.map((cert) => (
-                <div key={cert.id} className="certification-item mb-5">
+              {formValues.certifications.slice(0, 2).map((cert) => (
+                <div key={cert.id} className="certification-item mb-3">
                   <h3 
-                    className="font-bold text-lg mb-1" 
+                    className="font-bold text-sm mb-1" 
                     style={{ color: templateStyles.headerColor }}
                   >
                     {cert.name}
                   </h3>
-                  <p className="text-sm mb-1">
+                  <p className="text-xs mb-1">
                     <span className="font-semibold">Issuer:</span> {cert.issuer}
                   </p>
-                  <p className="text-sm mb-2">
+                  <p className="text-xs mb-1">
                     <span className="font-semibold">Date:</span> {getFormattedDate(cert.date)}
                   </p>
-                  <a 
-                    href={cert.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-sm hover:underline" 
-                    style={{ color: templateStyles.headerColor }}
-                  >
-                    View Certification
-                  </a>
                 </div>
               ))}
             </section>
             
             {/* Work Preferences Section */}
-            <section className={`preferences-section ${templateStyles.sectionSpacing} py-6`}>
+            <section className={`preferences-section ${templateStyles.sectionSpacing} py-4`}>
               <h2 
-                className={`text-2xl font-bold mb-4 uppercase tracking-wide ${templateStyles.borderStyle} pb-2`}
+                className={`text-xl font-bold mb-3 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
                 style={{ color: templateStyles.headerColor }}
               >
                 Work Preferences
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p className="text-sm">
+              <div className="grid grid-cols-2 gap-2">
+                <p className="text-xs">
                   <span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}
                 </p>
-                <p className="text-sm">
+                <p className="text-xs">
                   <span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}
                 </p>
-                <p className="text-sm">
+                <p className="text-xs">
                   <span className="font-semibold">Industry:</span> {formValues.workPreferences.industry}
                 </p>
-                <p className="text-sm">
+                <p className="text-xs">
                   <span className="font-semibold">Salary:</span> {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}
                 </p>
               </div>
