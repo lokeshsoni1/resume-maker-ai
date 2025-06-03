@@ -2,10 +2,9 @@
 import React from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
-import { FileText, ArrowRight } from 'lucide-react';
+import { FileText, ArrowRight, Wand } from 'lucide-react';
 import { ResumeTemplate } from '@/types';
 import { toast } from '@/components/ui/use-toast';
-import { Icons } from '@/components/ui/icons';
 
 export const Templates = () => {
   const { 
@@ -84,9 +83,9 @@ export const Templates = () => {
         id: `ai-generated-${timestamp}-${randomSeed}`,
         name: `AI Template ${timestamp % 1000}`,
         color: colors[colorIndex],
+        layout: layouts[layoutIndex],
         accentColor: accentColors[accentIndex],
         font: fonts[fontIndex],
-        layout: layouts[layoutIndex],
         borderStyle: borderStyles[borderIndex],
         headerLayout: headerLayouts[headerLayoutIndex],
         profilePosition: profilePositions[profilePositionIndex],
@@ -95,7 +94,7 @@ export const Templates = () => {
         isAiGenerated: true
       };
       
-      // Generate new AI template
+      // Generate new AI template using the enhanced approach
       const generatedTemplate = await generateAiTemplate();
       
       // Override with our enhanced variations
@@ -170,7 +169,7 @@ export const Templates = () => {
               disabled={isGeneratingTemplate}
               aria-label="Generate a new unique resume template with AI"
             >
-              <Icons.wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
+              <Wand className={`h-5 w-5 mr-2 ${isGeneratingTemplate ? 'animate-spin' : ''}`} />
               {isGeneratingTemplate ? "Generating..." : "Auto-Generate New Resume Template with AI"}
             </Button>
           </div>
