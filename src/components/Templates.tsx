@@ -38,7 +38,7 @@ export const Templates = () => {
         description: "AI is creating a unique template just for you...",
       });
       
-      // Enhanced AI template generation with more variation
+      // Enhanced AI template generation with proper type compliance
       const colors = [
         '#1a202c', '#2d3748', '#e53e3e', '#000000', '#2b6cb0', '#1a5276',
         '#9b2c2c', '#2c5530', '#553c9a', '#744210', '#1a365d', '#2d1b69'
@@ -55,9 +55,8 @@ export const Templates = () => {
         'Helvetica, sans-serif', 'Palatino, serif', 'Verdana, sans-serif'
       ];
       
-      const layouts = [
-        'single-column', 'two-column', 'creative-blocks', 'clean-minimal',
-        'executive-sidebar', 'tech-grid'
+      const layouts: ('single-column' | 'two-column' | 'hybrid')[] = [
+        'single-column', 'two-column', 'hybrid'
       ];
       
       const borderStyles = [
@@ -81,7 +80,7 @@ export const Templates = () => {
       const headerLayoutIndex = (timestamp + randomSeed + 5) % headerLayouts.length;
       const profilePositionIndex = (timestamp + randomSeed + 6) % profilePositions.length;
       
-      const newTemplate = {
+      const newTemplate: ResumeTemplate = {
         id: `ai-generated-${timestamp}-${randomSeed}`,
         name: `AI Template ${timestamp % 1000}`,
         color: colors[colorIndex],
@@ -92,7 +91,8 @@ export const Templates = () => {
         headerLayout: headerLayouts[headerLayoutIndex],
         profilePosition: profilePositions[profilePositionIndex],
         sectionSpacing: `mb-${Math.floor(Math.random() * 4) + 4}`,
-        className: `ai-template-${timestamp}-${randomSeed}`
+        className: `ai-template-${timestamp}-${randomSeed}`,
+        isAiGenerated: true
       };
       
       // Generate new AI template

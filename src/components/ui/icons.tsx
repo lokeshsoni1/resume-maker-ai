@@ -1,5 +1,5 @@
 
-import { Twitter, Instagram, Facebook, Mail, RefreshCw, Loader2, ZoomOut, CurrencyIcon, DollarSign, Euro, IndianRupee, JapaneseYen } from 'lucide-react';
+import { Twitter, Instagram, Facebook, Mail, RefreshCw, Loader2, ZoomOut, CurrencyIcon, DollarSign, Euro, IndianRupee, JapaneseYen, Wand } from 'lucide-react';
 
 // Export the icons object
 export const Icons = {
@@ -14,5 +14,6 @@ export const Icons = {
   dollarSign: DollarSign,
   euro: Euro,
   indianRupee: IndianRupee,
-  japaneseYen: JapaneseYen
+  japaneseYen: JapaneseYen,
+  wand: Wand
 };

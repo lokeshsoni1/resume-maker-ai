@@ -1,4 +1,3 @@
-
 // Form Types
 export type FormStep =
   | 'personal'
@@ -111,6 +110,12 @@ export interface ResumeTemplate {
   secondaryColor?: string;
   font?: string;
   isAiGenerated?: boolean;
+  accentColor?: string;
+  borderStyle?: string;
+  headerLayout?: string;
+  profilePosition?: string;
+  sectionSpacing?: string;
+  className?: string;
 }
 
 export interface AITemplate extends ResumeTemplate {
