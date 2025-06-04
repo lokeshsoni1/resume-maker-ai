@@ -10,7 +10,7 @@ import html2canvas from 'html2canvas';
 import { ResumeTemplate } from '@/types';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
 
 // Import our download options component
 import { DownloadOptions } from '@/components/DownloadOptions';
@@ -752,10 +752,7 @@ export const ResumePreview = () => {
                   {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                 </span>
               </div>
-              <p 
-                className="font-semibold text-sm mb-1" 
-                style={{ color: templateStyles.accentColor }}
-              >
+              <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
                 {edu.institution}
               </p>
               <p className="text-xs mb-1">{edu.location}</p>
@@ -776,10 +773,7 @@ export const ResumePreview = () => {
           </h2>
           {formValues.projects.slice(0, 3).map((project) => (
             <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.headerColor }}>
-              <h3 
-                className="font-bold text-sm mb-1" 
-                style={{ color: templateStyles.headerColor }}
-              >
+              <h3 className="font-bold text-sm mb-1" style={{ color: templateStyles.headerColor }}>
                 {project.title}
               </h3>
               <p className="text-xs mb-1 leading-relaxed">{project.description?.substring(0, 120)}...</p>
@@ -799,18 +793,12 @@ export const ResumePreview = () => {
       {/* Certifications Section */}
       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
         <section className={`certifications-section ${templateStyles.sectionSpacing}`}>
-          <h2 
-            className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
-            style={{ color: templateStyles.headerColor }}
-          >
+          <h2 className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`} style={{ color: templateStyles.headerColor }}>
             Certifications
           </h2>
           {formValues.certifications.slice(0, 3).map((cert) => (
             <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.headerColor }}>
-              <h3 
-                className="font-bold text-sm mb-1" 
-                style={{ color: templateStyles.headerColor }}
-              >
+              <h3 className="font-bold text-sm mb-1" style={{ color: templateStyles.headerColor }}>
                 {cert.name}
               </h3>
               <p className="text-xs mb-1">
@@ -831,10 +819,7 @@ export const ResumePreview = () => {
 
       {/* Additional Information */}
       <section className={`additional-info ${templateStyles.sectionSpacing}`}>
-        <h2 
-          className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
-          style={{ color: templateStyles.headerColor }}
-        >
+        <h2 className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`} style={{ color: templateStyles.headerColor }}>
           Additional Information
         </h2>
         <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.headerColor }}>
@@ -1029,10 +1014,7 @@ export const ResumePreview = () => {
                     {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                   </span>
                 </div>
-                <p 
-                  className="font-semibold text-sm mb-1" 
-                  style={{ color: templateStyles.accentColor }}
-                >
+                <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
                   {edu.institution}
                 </p>
                 <p className="text-xs mb-1">{edu.location}</p>
