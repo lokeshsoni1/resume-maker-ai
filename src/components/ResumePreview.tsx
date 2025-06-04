@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas';
 import { ResumeTemplate } from '@/types';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
 
 // Import our download options component
 import { DownloadOptions } from '@/components/DownloadOptions';
@@ -93,8 +94,8 @@ export const ResumePreview = () => {
     // For AI-generated templates, use their custom properties
     if (selectedTemplate.id.startsWith('ai-generated')) {
       return {
-        headerColor: selectedTemplate.headerColor || '#1a202c',
-        accentColor: selectedTemplate.accentColor || '#4a5568',
+        headerColor: selectedTemplate.headerColor || selectedTemplate.color || '#1a202c',
+        accentColor: selectedTemplate.accentColor || selectedTemplate.secondaryColor || '#4a5568',
         font: selectedTemplate.font || 'Roboto, sans-serif',
         layout: selectedTemplate.layout || 'single-column',
         borderStyle: selectedTemplate.borderStyle || 'border-b-2 border-gray-300',
@@ -168,6 +169,7 @@ export const ResumePreview = () => {
       const newTemplate: ResumeTemplate = {
         id: `ai-generated-${timestamp}-${randomSeed}`,
         name: `AI Template ${Math.floor(Math.random() * 9999) + 1}`,
+        color: headerColors[headerColorIndex],
         headerColor: headerColors[headerColorIndex],
         accentColor: accentColors[accentColorIndex],
         layout: layouts[layoutIndex],
@@ -1200,10 +1202,7 @@ export const ResumePreview = () => {
                       {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                     </span>
                   </div>
-                  <p 
-                    className="font-semibold text-sm mb-1" 
-                    style={{ color: templateStyles.accentColor }}
-                  >
+                  <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
                     {exp.company}
                   </p>
                   <p className="text-xs mb-1 italic">{exp.location}</p>
@@ -1267,10 +1266,7 @@ export const ResumePreview = () => {
                       {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                     </span>
                   </div>
-                  <p 
-                    className="font-semibold text-sm mb-1" 
-                    style={{ color: templateStyles.accentColor }}
-                  >
+                  <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
                     {edu.institution}
                   </p>
                   <p className="text-xs mb-1">{edu.location}</p>
@@ -1422,7 +1418,7 @@ export const ResumePreview = () => {
           </div>
         </div>
         
-        {/* Enhanced Download Options with DOCX fix */}
+        {/* Enhanced Download Options */}
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <Button
             variant="outline"
@@ -1431,7 +1427,6 @@ export const ResumePreview = () => {
                 const resumeContent = document.getElementById('resume-content');
                 if (!resumeContent) return;
 
-                // Force A4 dimensions for PNG
                 const canvas = await html2canvas(resumeContent, {
                   scale: 2,
                   useCORS: true,
@@ -1479,7 +1474,6 @@ export const ResumePreview = () => {
                   throw new Error('Resume content not found');
                 }
                 
-                // Capture with html2canvas
                 const canvas = await html2canvas(resumeContent, {
                   scale: 2,
                   useCORS: true,
@@ -1487,25 +1481,21 @@ export const ResumePreview = () => {
                   backgroundColor: '#FFFFFF',
                 });
                 
-                // Create PDF
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF({
                   orientation: 'portrait',
                   unit: 'px',
-                  format: [canvas.width, canvas.height]
+                  format: [794, 1123] // A4 dimensions
                 });
                 
-                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                pdf.addImage(imgData, 'PNG', 0, 0, 794, 1123);
                 
-                // Generate file name
                 const fileName = formValues.fullName 
                   ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.pdf` 
                   : `Resume-${new Date().toISOString().split('T')[0]}.pdf`;
                 
-                // Download PDF
                 pdf.save(fileName);
                 
-                // Track download
                 toast({
                   title: "Download Complete",
                   description: "Your resume has been downloaded as a PDF file.",
