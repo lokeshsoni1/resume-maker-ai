@@ -28,4 +28,7 @@ export default defineConfig(({ mode }) => ({
       external: [], // Ensure dependencies are bundled, not externalized
     },
   },
+  define: {
+    global: 'globalThis',
+  },
 }));
