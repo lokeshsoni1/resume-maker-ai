@@ -1,3 +1,4 @@
+
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; 
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import html2canvas from 'html2canvas';
+import { ResumeTemplate } from '@/types';
 
 // Import our download options component
 import { DownloadOptions } from '@/components/DownloadOptions';
@@ -210,7 +212,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-20 h-20 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.headerColor }}
+                style={{ borderColor: templateStyles.accentColor }}
               />
             </div>
           )}
@@ -231,7 +233,7 @@ export const ResumePreview = () => {
             >
               {formValues.personalDetails.bio || 'Professional Title'}
             </p>
-            <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-1 text-xs" style={{ color: templateStyles.color }}>
+            <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-1 text-xs" style={{ color: templateStyles.headerColor }}>
               <div>
                 <span className="font-semibold">Email:</span> {formValues.contactInformation.email || 'email@example.com'}
               </div>
@@ -250,7 +252,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-20 h-20 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.headerColor }}
+                style={{ borderColor: templateStyles.accentColor }}
               />
             </div>
           )}
@@ -266,7 +268,7 @@ export const ResumePreview = () => {
           >
             Online Profiles
           </h2>
-          <div className="grid grid-cols-1 gap-1 text-xs" style={{ color: templateStyles.color }}>
+          <div className="grid grid-cols-1 gap-1 text-xs" style={{ color: templateStyles.headerColor }}>
             {formValues.contactInformation.linkedin && (
               <div>
                 <span className="font-semibold">LinkedIn:</span> {formValues.contactInformation.linkedin}
@@ -300,7 +302,7 @@ export const ResumePreview = () => {
               <Badge 
                 key={index} 
                 className="skill-badge text-white text-xs py-1 px-2" 
-                style={{ backgroundColor: templateStyles.color + '20', color: templateStyles.color }}
+                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor }}
               >
                 {skill}
               </Badge>
@@ -319,7 +321,7 @@ export const ResumePreview = () => {
             Professional Experience
           </h2>
           {formValues.experience.slice(0, 4).map((exp) => (
-            <div key={exp.id} className="experience-item mb-3" style={{ color: templateStyles.color }}>
+            <div key={exp.id} className="experience-item mb-3" style={{ color: templateStyles.headerColor }}>
               <div className="flex justify-between items-start mb-1">
                 <h3 
                   className="font-bold text-sm" 
@@ -357,7 +359,7 @@ export const ResumePreview = () => {
             Education
           </h2>
           {formValues.education.slice(0, 3).map((edu) => (
-            <div key={edu.id} className="education-item mb-3" style={{ color: templateStyles.color }}>
+            <div key={edu.id} className="education-item mb-3" style={{ color: templateStyles.headerColor }}>
               <div className="flex justify-between items-start mb-1">
                 <h3 
                   className="font-bold text-sm" 
@@ -395,7 +397,7 @@ export const ResumePreview = () => {
             Projects
           </h2>
           {formValues.projects.slice(0, 3).map((project) => (
-            <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.color }}>
+            <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.headerColor }}>
               <h3 
                 className="font-bold text-sm mb-1" 
                 style={{ color: templateStyles.headerColor }}
@@ -426,7 +428,7 @@ export const ResumePreview = () => {
             Certifications
           </h2>
           {formValues.certifications.slice(0, 3).map((cert) => (
-            <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.color }}>
+            <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.headerColor }}>
               <h3 
                 className="font-bold text-sm mb-1" 
                 style={{ color: templateStyles.headerColor }}
@@ -457,7 +459,7 @@ export const ResumePreview = () => {
         >
           Additional Information
         </h2>
-        <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.color }}>
+        <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.headerColor }}>
           <p className="text-xs">
             <span className="font-semibold">Date of Birth:</span> {formValues.personalDetails.dateOfBirth || 'Not specified'}
           </p>
@@ -484,7 +486,7 @@ export const ResumePreview = () => {
   const renderTwoColumnLayout = () => (
     <div className="grid grid-cols-3 gap-4">
       {/* Left Sidebar */}
-      <div className="col-span-1 space-y-4" style={{ color: templateStyles.color }}>
+      <div className="col-span-1 space-y-4" style={{ color: templateStyles.headerColor }}>
         {/* Profile Image */}
         {formValues.profileImageUrl && (
           <div className="profile-section text-center">
@@ -492,7 +494,7 @@ export const ResumePreview = () => {
               src={formValues.profileImageUrl} 
               alt="Profile" 
               className="w-24 h-24 rounded-full object-cover border-2 shadow-md mx-auto mb-2"
-              style={{ borderColor: templateStyles.headerColor }}
+              style={{ borderColor: templateStyles.accentColor }}
             />
           </div>
         )}
@@ -540,7 +542,7 @@ export const ResumePreview = () => {
             </h2>
             <div className="space-y-1">
               {formValues.skills.slice(0, 10).map((skill, index) => (
-                <div key={index} className="text-xs" style={{ color: templateStyles.color }}>{skill}</div>
+                <div key={index} className="text-xs" style={{ color: templateStyles.accentColor }}>{skill}</div>
               ))}
             </div>
           </section>
@@ -566,7 +568,7 @@ export const ResumePreview = () => {
       </div>
 
       {/* Right Main Content */}
-      <div className="col-span-2 space-y-4" style={{ color: templateStyles.color }}>
+      <div className="col-span-2 space-y-4" style={{ color: templateStyles.headerColor }}>
         {/* Header */}
         <header className={`resume-header ${templateStyles.borderStyle} pb-4 mb-4`}>
           <h1 
@@ -730,7 +732,7 @@ export const ResumePreview = () => {
   );
 
   const renderHybridLayout = () => (
-    <div className="space-y-4" style={{ color: templateStyles.color }}>
+    <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
       {/* Creative Header */}
       <header className={`resume-header ${templateStyles.borderStyle} pb-4 mb-4`}>
         <div className="grid grid-cols-4 gap-4 items-center">
@@ -740,7 +742,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-24 h-24 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.headerColor }}
+                style={{ borderColor: templateStyles.accentColor }}
               />
             </div>
           )}
@@ -761,7 +763,7 @@ export const ResumePreview = () => {
             >
               {formValues.personalDetails.bio || 'Professional Title'}
             </p>
-            <div className="flex justify-center space-x-4 text-xs" style={{ color: templateStyles.color }}>
+            <div className="flex justify-center space-x-4 text-xs" style={{ color: templateStyles.headerColor }}>
               <span>{formValues.contactInformation.email || 'email@example.com'}</span>
               <span>{formValues.contactInformation.phone || '(123) 456-7890'}</span>
               <span>{formValues.personalDetails.address || '123 Street, City, State'}</span>
@@ -784,7 +786,7 @@ export const ResumePreview = () => {
               <Badge 
                 key={index} 
                 className="skill-badge text-white text-xs py-1 px-3" 
-                style={{ backgroundColor: templateStyles.color + '20', color: templateStyles.color }}
+                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor }}
               >
                 {skill}
               </Badge>
@@ -796,7 +798,7 @@ export const ResumePreview = () => {
       {/* Two Column Content */}
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}
-        <div className="space-y-4" style={{ color: templateStyles.color }}>
+        <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
           {/* Experience */}
           {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
             <section className={`experience-section ${templateStyles.sectionSpacing}`}>
@@ -863,7 +865,7 @@ export const ResumePreview = () => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-4" style={{ color: templateStyles.color }}>
+        <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
           {/* Education */}
           {formValues.education.length > 0 && formValues.education[0].degree && (
             <section className={`education-section ${templateStyles.sectionSpacing}`}>
@@ -938,7 +940,7 @@ export const ResumePreview = () => {
             >
               Preferences
             </h2>
-            <div className="space-y-1 text-xs" style={{ color: templateStyles.color }}>
+            <div className="space-y-1 text-xs" style={{ color: templateStyles.headerColor }}>
               <div><span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}</div>
               <div><span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}</div>
               <div><span className="font-semibold">Industry:</span> {formValues.workPreferences.industry || 'Not specified'}</div>
@@ -955,7 +957,7 @@ export const ResumePreview = () => {
               >
                 Online Presence
               </h2>
-              <div className="space-y-1 text-xs" style={{ color: templateStyles.color }}>
+              <div className="space-y-1 text-xs" style={{ color: templateStyles.headerColor }}>
                 {formValues.contactInformation.linkedin && <div>LinkedIn: {formValues.contactInformation.linkedin}</div>}
                 {formValues.contactInformation.github && <div>GitHub: {formValues.contactInformation.github}</div>}
                 {formValues.contactInformation.portfolio && <div>Portfolio: {formValues.contactInformation.portfolio}</div>}
