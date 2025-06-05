@@ -1,3 +1,4 @@
+
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; 
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -18,18 +19,18 @@ export const ResumePreview = () => {
   const { themes, currentTheme } = useTheme();
   const [isGenerating, setIsGenerating] = useState(false);
   
-  // Professional color combinations
+  // Updated professional color combinations
   const colorCombinations = [
-    { heading: '#002D62', text: '#333333', accent: '#D3D3D3' }, // Navy & Charcoal
-    { heading: '#008080', text: '#2F4F4F', accent: '#EAEDED' }, // Teal & Slate
-    { heading: '#228B22', text: '#000000', accent: '#B0B0B0' }, // Forest Green & Black
-    { heading: '#4169E1', text: '#2C2C2C', accent: '#B0C4DE' }, // Royal Blue & Dark Gray
-    { heading: '#800000', text: '#3B3B3B', accent: '#DCDCDC' }, // Maroon & Graphite
-    { heading: '#4B0082', text: '#1A1A1A', accent: '#F2F2F2' }, // Indigo & Jet Black
-    { heading: '#006D77', text: '#353839', accent: '#F8F8F8' }, // Dark Cyan & Onyx
-    { heading: '#CC5500', text: '#2A3439', accent: '#DCDCDC' }, // Burnt Orange & Gunmetal
-    { heading: '#6A5ACD', text: '#36454F', accent: '#D3D3D3' }, // Slate Blue & Charcoal
-    { heading: '#5D3FD3', text: '#4B4B4B', accent: '#E5E5E5' }, // Deep Purple & Storm Gray
+    { heading: '#001F54', text: '#000000' }, // Dark Navy & Black
+    { heading: '#B22222', text: '#000000' }, // Crimson & Black
+    { heading: '#4B0082', text: '#000000' }, // Deep Purple & Black
+    { heading: '#002366', text: '#000000' }, // Royal Blue & Black
+    { heading: '#381819', text: '#000000' }, // Chocolate Brown & Black
+    { heading: '#B7410E', text: '#000000' }, // Rust Orange & Black
+    { heading: '#004225', text: '#000000' }, // Bottle Green & Black
+    { heading: '#002147', text: '#000000' }, // Oxford Blue & Black
+    { heading: '#800020', text: '#000000' }, // Burgundy & Black
+    { heading: '#0F52BA', text: '#000000' }, // Sapphire Blue & Black
   ];
   
   // Enhanced template styles based on the 6 predefined templates
@@ -44,7 +45,6 @@ export const ResumePreview = () => {
       'modern': {
         headerColor: colorCombinations[0].heading,
         textColor: colorCombinations[0].text,
-        accentColor: colorCombinations[0].accent,
         font: 'Roboto, sans-serif',
         layout: 'single-column' as const,
         borderStyle: 'border-b-2 border-gray-300',
@@ -55,7 +55,6 @@ export const ResumePreview = () => {
       'professional': {
         headerColor: colorCombinations[1].heading,
         textColor: colorCombinations[1].text,
-        accentColor: colorCombinations[1].accent,
         font: 'Times New Roman, serif',
         layout: 'two-column' as const,
         borderStyle: 'border-l-4 border-blue-600',
@@ -66,7 +65,6 @@ export const ResumePreview = () => {
       'creative': {
         headerColor: colorCombinations[2].heading,
         textColor: colorCombinations[2].text,
-        accentColor: colorCombinations[2].accent,
         font: 'Montserrat, sans-serif',
         layout: 'hybrid' as const,
         borderStyle: 'border-t-4 border-orange-500',
@@ -77,7 +75,6 @@ export const ResumePreview = () => {
       'minimalist': {
         headerColor: colorCombinations[3].heading,
         textColor: colorCombinations[3].text,
-        accentColor: colorCombinations[3].accent,
         font: 'Arial, sans-serif',
         layout: 'single-column' as const,
         borderStyle: 'border-none',
@@ -88,7 +85,6 @@ export const ResumePreview = () => {
       'executive': {
         headerColor: colorCombinations[4].heading,
         textColor: colorCombinations[4].text,
-        accentColor: colorCombinations[4].accent,
         font: 'Garamond, serif',
         layout: 'two-column' as const,
         borderStyle: 'border-b-2 border-blue-800',
@@ -99,7 +95,6 @@ export const ResumePreview = () => {
       'tech': {
         headerColor: colorCombinations[5].heading,
         textColor: colorCombinations[5].text,
-        accentColor: colorCombinations[5].accent,
         font: 'Montserrat, sans-serif',
         layout: 'hybrid' as const,
         borderStyle: 'border-l-2 border-cyan-600',
@@ -114,7 +109,6 @@ export const ResumePreview = () => {
       return {
         headerColor: selectedTemplate.color || colorCombinations[0].heading,
         textColor: selectedTemplate.color || colorCombinations[0].text,
-        accentColor: selectedTemplate.accentColor || colorCombinations[0].accent,
         font: selectedTemplate.font || 'Roboto, sans-serif',
         layout: selectedTemplate.layout || 'single-column',
         borderStyle: selectedTemplate.borderStyle || 'border-b-2 border-gray-300',
@@ -178,7 +172,6 @@ export const ResumePreview = () => {
         name: `AI Template ${Math.floor(Math.random() * 9999) + 1}`,
         color: colorCombo.heading,
         layout: layouts[layoutIndex],
-        accentColor: colorCombo.accent,
         font: fonts[fontIndex],
         borderStyle: borderStyles[borderIndex],
         headerLayout: headerLayouts[headerLayoutIndex],
@@ -316,7 +309,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-20 h-20 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.accentColor }}
+                style={{ borderColor: '#DCDCDC' }}
               />
             </div>
           )}
@@ -356,7 +349,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-20 h-20 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.accentColor }}
+                style={{ borderColor: '#DCDCDC' }}
               />
             </div>
           )}
@@ -410,14 +403,14 @@ export const ResumePreview = () => {
                 </h3>
                 <span 
                   className="text-xs font-medium" 
-                  style={{ color: templateStyles.accentColor }}
+                  style={{ color: templateStyles.textColor }}
                 >
                   {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                 </span>
               </div>
               <p 
                 className="font-semibold text-sm mb-1" 
-                style={{ color: templateStyles.accentColor }}
+                style={{ color: templateStyles.textColor }}
               >
                 {exp.company}
               </p>
@@ -448,14 +441,14 @@ export const ResumePreview = () => {
                 </h3>
                 <span 
                   className="text-xs font-medium" 
-                  style={{ color: templateStyles.accentColor }}
+                  style={{ color: templateStyles.textColor }}
                 >
                   {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                 </span>
               </div>
               <p 
                 className="font-semibold text-sm mb-1" 
-                style={{ color: templateStyles.accentColor }}
+                style={{ color: templateStyles.textColor }}
               >
                 {edu.institution}
               </p>
@@ -573,7 +566,7 @@ export const ResumePreview = () => {
               src={formValues.profileImageUrl} 
               alt="Profile" 
               className="w-24 h-24 rounded-full object-cover border-2 shadow-md mx-auto mb-2"
-              style={{ borderColor: templateStyles.accentColor }}
+              style={{ borderColor: '#DCDCDC' }}
             />
           </div>
         )}
@@ -670,14 +663,14 @@ export const ResumePreview = () => {
                   </h3>
                   <span 
                     className="text-xs font-medium" 
-                    style={{ color: templateStyles.accentColor }}
+                    style={{ color: templateStyles.textColor }}
                   >
                     {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                   </span>
                 </div>
                 <p 
                   className="font-semibold text-sm mb-1" 
-                  style={{ color: templateStyles.accentColor }}
+                  style={{ color: templateStyles.textColor }}
                 >
                   {exp.company}
                 </p>
@@ -708,14 +701,14 @@ export const ResumePreview = () => {
                   </h3>
                   <span 
                     className="text-xs font-medium" 
-                    style={{ color: templateStyles.accentColor }}
+                    style={{ color: templateStyles.textColor }}
                   >
                     {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                   </span>
                 </div>
                 <p 
                   className="font-semibold text-sm mb-1" 
-                  style={{ color: templateStyles.accentColor }}
+                  style={{ color: templateStyles.textColor }}
                 >
                   {edu.institution}
                 </p>
@@ -804,7 +797,7 @@ export const ResumePreview = () => {
                 src={formValues.profileImageUrl} 
                 alt="Profile" 
                 className="w-24 h-24 rounded-full object-cover border-2 shadow-md"
-                style={{ borderColor: templateStyles.accentColor }}
+                style={{ borderColor: '#DCDCDC' }}
               />
             </div>
           )}
@@ -881,14 +874,14 @@ export const ResumePreview = () => {
                     </h3>
                     <span 
                       className="text-xs font-medium" 
-                      style={{ color: templateStyles.accentColor }}
+                      style={{ color: templateStyles.textColor }}
                     >
                       {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                     </span>
                   </div>
                   <p 
                     className="font-semibold text-sm mb-1" 
-                    style={{ color: templateStyles.accentColor }}
+                    style={{ color: templateStyles.textColor }}
                   >
                     {exp.company}
                   </p>
@@ -948,14 +941,14 @@ export const ResumePreview = () => {
                     </h3>
                     <span 
                       className="text-xs font-medium" 
-                      style={{ color: templateStyles.accentColor }}
+                      style={{ color: templateStyles.textColor }}
                     >
                       {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                     </span>
                   </div>
                   <p 
                     className="font-semibold text-sm mb-1" 
-                    style={{ color: templateStyles.accentColor }}
+                    style={{ color: templateStyles.textColor }}
                   >
                     {edu.institution}
                   </p>
@@ -1091,7 +1084,7 @@ export const ResumePreview = () => {
           </div>
         </div>
         
-        {/* Download Buttons - Removed DOCX button */}
+        {/* Download Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <Button
             variant="outline"
