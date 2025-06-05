@@ -27,6 +27,9 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       external: [], // Ensure dependencies are bundled, not externalized
     },
+    commonjsOptions: {
+      include: [/file-saver/, /node_modules/]
+    }
   },
   define: {
     global: 'globalThis',

@@ -9,7 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import html2canvas from 'html2canvas';
 import { ResumeTemplate } from '@/types';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
-import * as FileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 
 // Import our download options component
@@ -555,7 +555,7 @@ export const ResumePreview = () => {
         ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.docx` 
         : `Resume-${new Date().toISOString().split('T')[0]}.docx`;
       
-      FileSaver.saveAs(blob, fileName);
+      saveAs(blob, fileName);
       
       toast({
         title: "Download Complete",
@@ -574,7 +574,6 @@ export const ResumePreview = () => {
 
   const templateStyles = getTemplateStyles();
   
-  // Render different layouts based on template type
   const renderSingleColumnLayout = () => (
     <div className="space-y-4">
       {/* Header Section */}
