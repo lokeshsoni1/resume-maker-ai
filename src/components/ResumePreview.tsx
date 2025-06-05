@@ -1,4 +1,3 @@
-
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; 
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -9,8 +8,6 @@ import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { saveAs } from 'file-saver';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { ResumeTemplate } from '@/types';
 
 // Import our download options component
@@ -301,210 +298,6 @@ export const ResumePreview = () => {
       toast({
         title: "Download Failed",
         description: "We couldn't generate your PDF file. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDownloadDocx = async () => {
-    try {
-      const templateStyles = getTemplateStyles();
-      
-      // Create DOCX document
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: [
-            // Header
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: formValues.fullName || 'Your Name',
-                  bold: true,
-                  size: 32,
-                  color: templateStyles.headerColor.replace('#', ''),
-                }),
-              ],
-              heading: HeadingLevel.HEADING_1,
-              alignment: AlignmentType.CENTER,
-            }),
-            
-            // Contact Information
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `${formValues.contactInformation.email || 'email@example.com'} | ${formValues.contactInformation.phone || '(123) 456-7890'}`,
-                  size: 20,
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-            }),
-            
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: formValues.personalDetails.address || '123 Street, City, State',
-                  size: 20,
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-            }),
-            
-            // Bio
-            ...(formValues.personalDetails.bio ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: 'Professional Summary',
-                    bold: true,
-                    size: 24,
-                    color: templateStyles.headerColor.replace('#', ''),
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_2,
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: formValues.personalDetails.bio,
-                    size: 20,
-                  }),
-                ],
-              }),
-            ] : []),
-            
-            // Skills
-            ...(formValues.skills.length > 0 ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: 'Skills',
-                    bold: true,
-                    size: 24,
-                    color: templateStyles.headerColor.replace('#', ''),
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_2,
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: formValues.skills.join(', '),
-                    size: 20,
-                  }),
-                ],
-              }),
-            ] : []),
-            
-            // Experience
-            ...(formValues.experience.length > 0 && formValues.experience[0].jobTitle ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: 'Professional Experience',
-                    bold: true,
-                    size: 24,
-                    color: templateStyles.headerColor.replace('#', ''),
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_2,
-              }),
-              ...formValues.experience.flatMap(exp => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: exp.jobTitle,
-                      bold: true,
-                      size: 22,
-                    }),
-                    new TextRun({
-                      text: ` - ${exp.company}`,
-                      size: 22,
-                      color: templateStyles.accentColor.replace('#', ''),
-                    }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${getFormattedDate(exp.startDate)} - ${exp.current ? 'Present' : getFormattedDate(exp.endDate)} | ${exp.location}`,
-                      size: 18,
-                      italics: true,
-                    }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: exp.description || '',
-                      size: 20,
-                    }),
-                  ],
-                }),
-              ])
-            ] : []),
-            
-            // Education
-            ...(formValues.education.length > 0 && formValues.education[0].degree ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: 'Education',
-                    bold: true,
-                    size: 24,
-                    color: templateStyles.headerColor.replace('#', ''),
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_2,
-              }),
-              ...formValues.education.flatMap(edu => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: edu.degree,
-                      bold: true,
-                      size: 22,
-                    }),
-                    new TextRun({
-                      text: ` - ${edu.institution}`,
-                      size: 22,
-                      color: templateStyles.accentColor.replace('#', ''),
-                    }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${getFormattedDate(edu.startDate)} - ${edu.current ? 'Present' : getFormattedDate(edu.endDate)} | ${edu.location}`,
-                      size: 18,
-                      italics: true,
-                    }),
-                  ],
-                }),
-              ])
-            ] : []),
-          ],
-        }],
-      });
-      
-      // Generate and download
-      const buffer = await Packer.toBuffer(doc);
-      const fileName = formValues.fullName 
-        ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.docx` 
-        : `Resume-${new Date().toISOString().split('T')[0]}.docx`;
-      
-      saveAs(new Blob([buffer]), fileName);
-      
-      toast({
-        title: "Download Complete",
-        description: "Your resume has been downloaded as a Word document.",
-      });
-      
-    } catch (error) {
-      console.error('Error downloading DOCX:', error);
-      toast({
-        title: "Download Failed",
-        description: "We couldn't generate your Word document. Please try again.",
         variant: "destructive",
       });
     }
@@ -1298,7 +1091,7 @@ export const ResumePreview = () => {
           </div>
         </div>
         
-        {/* Download Buttons */}
+        {/* Download Buttons - Removed DOCX button */}
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <Button
             variant="outline"
@@ -1316,15 +1109,6 @@ export const ResumePreview = () => {
           >
             <Download className="h-4 w-4" />
             Download as PDF
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={handleDownloadDocx}
-            className="flex items-center gap-2 hover-scale glow"
-          >
-            <Download className="h-4 w-4" />
-            Download as Word (DOCX)
           </Button>
         </div>
       </div>
