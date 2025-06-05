@@ -1,3 +1,4 @@
+
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; 
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -20,6 +21,20 @@ export const ResumePreview = () => {
   const { themes, currentTheme } = useTheme();
   const [isGenerating, setIsGenerating] = useState(false);
   
+  // Professional color combinations
+  const colorCombinations = [
+    { heading: '#002D62', text: '#333333', accent: '#D3D3D3' }, // Navy & Charcoal
+    { heading: '#008080', text: '#2F4F4F', accent: '#EAEDED' }, // Teal & Slate
+    { heading: '#228B22', text: '#000000', accent: '#B0B0B0' }, // Forest Green & Black
+    { heading: '#4169E1', text: '#2C2C2C', accent: '#B0C4DE' }, // Royal Blue & Dark Gray
+    { heading: '#800000', text: '#3B3B3B', accent: '#DCDCDC' }, // Maroon & Graphite
+    { heading: '#4B0082', text: '#1A1A1A', accent: '#F2F2F2' }, // Indigo & Jet Black
+    { heading: '#006D77', text: '#353839', accent: '#F8F8F8' }, // Dark Cyan & Onyx
+    { heading: '#CC5500', text: '#2A3439', accent: '#DCDCDC' }, // Burnt Orange & Gunmetal
+    { heading: '#6A5ACD', text: '#36454F', accent: '#D3D3D3' }, // Slate Blue & Charcoal
+    { heading: '#5D3FD3', text: '#4B4B4B', accent: '#E5E5E5' }, // Deep Purple & Storm Gray
+  ];
+  
   // Enhanced template styles based on the 6 predefined templates
   const getTemplateClass = () => {
     const theme = themes.find(t => t.id === currentTheme);
@@ -30,8 +45,9 @@ export const ResumePreview = () => {
   const getTemplateStyles = () => {
     const templateConfigs = {
       'modern': {
-        headerColor: '#1a202c',
-        accentColor: '#4a5568',
+        headerColor: colorCombinations[0].heading,
+        textColor: colorCombinations[0].text,
+        accentColor: colorCombinations[0].accent,
         font: 'Roboto, sans-serif',
         layout: 'single-column' as const,
         borderStyle: 'border-b-2 border-gray-300',
@@ -40,8 +56,9 @@ export const ResumePreview = () => {
         profilePosition: 'left'
       },
       'professional': {
-        headerColor: '#2d3748',
-        accentColor: '#718096',
+        headerColor: colorCombinations[1].heading,
+        textColor: colorCombinations[1].text,
+        accentColor: colorCombinations[1].accent,
         font: 'Times New Roman, serif',
         layout: 'two-column' as const,
         borderStyle: 'border-l-4 border-blue-600',
@@ -50,8 +67,9 @@ export const ResumePreview = () => {
         profilePosition: 'center'
       },
       'creative': {
-        headerColor: '#e53e3e',
-        accentColor: '#fc8181',
+        headerColor: colorCombinations[2].heading,
+        textColor: colorCombinations[2].text,
+        accentColor: colorCombinations[2].accent,
         font: 'Montserrat, sans-serif',
         layout: 'hybrid' as const,
         borderStyle: 'border-t-4 border-orange-500',
@@ -60,8 +78,9 @@ export const ResumePreview = () => {
         profilePosition: 'right'
       },
       'minimalist': {
-        headerColor: '#000000',
-        accentColor: '#4a4a4a',
+        headerColor: colorCombinations[3].heading,
+        textColor: colorCombinations[3].text,
+        accentColor: colorCombinations[3].accent,
         font: 'Arial, sans-serif',
         layout: 'single-column' as const,
         borderStyle: 'border-none',
@@ -70,8 +89,9 @@ export const ResumePreview = () => {
         profilePosition: 'left'
       },
       'executive': {
-        headerColor: '#2b6cb0',
-        accentColor: '#90cdf4',
+        headerColor: colorCombinations[4].heading,
+        textColor: colorCombinations[4].text,
+        accentColor: colorCombinations[4].accent,
         font: 'Garamond, serif',
         layout: 'two-column' as const,
         borderStyle: 'border-b-2 border-blue-800',
@@ -80,8 +100,9 @@ export const ResumePreview = () => {
         profilePosition: 'center'
       },
       'tech': {
-        headerColor: '#1a5276',
-        accentColor: '#5dade2',
+        headerColor: colorCombinations[5].heading,
+        textColor: colorCombinations[5].text,
+        accentColor: colorCombinations[5].accent,
         font: 'Montserrat, sans-serif',
         layout: 'hybrid' as const,
         borderStyle: 'border-l-2 border-cyan-600',
@@ -94,8 +115,9 @@ export const ResumePreview = () => {
     // For AI-generated templates, use their custom properties
     if (selectedTemplate.id.startsWith('ai-generated')) {
       return {
-        headerColor: selectedTemplate.color || '#1a202c',
-        accentColor: selectedTemplate.accentColor || '#4a5568',
+        headerColor: selectedTemplate.color || colorCombinations[0].heading,
+        textColor: selectedTemplate.color || colorCombinations[0].text,
+        accentColor: selectedTemplate.accentColor || colorCombinations[0].accent,
         font: selectedTemplate.font || 'Roboto, sans-serif',
         layout: selectedTemplate.layout || 'single-column',
         borderStyle: selectedTemplate.borderStyle || 'border-b-2 border-gray-300',
@@ -118,21 +140,6 @@ export const ResumePreview = () => {
         title: "Generating Template",
         description: "AI is creating a unique template just for you...",
       });
-      
-      // Enhanced AI template generation with dark, professional colors only
-      const darkProfessionalColors = [
-        '#1a202c', '#2d3748', '#1a5276', '#2b6cb0', '#4a5568',
-        '#9b2c2c', '#2c5530', '#553c9a', '#744210', '#1a365d', 
-        '#2d1b69', '#c53030', '#38a169', '#805ad5', '#d69e2e', 
-        '#319795', '#dd6b20', '#065f46', '#7c2d12', '#581c87'
-      ];
-      
-      const darkAccentColors = [
-        '#4a5568', '#718096', '#5dade2', '#90cdf4', '#68d391',
-        '#b794f6', '#f6ad55', '#63b3ed', '#a78bfa', '#fbb6ce',
-        '#9ae6b4', '#fbd38d', '#81e6d9', '#f687b3', '#bee3f8',
-        '#c6f6d5', '#fed7d7', '#e9d8fd', '#fef5e7', '#e6fffa'
-      ];
       
       const fonts = [
         'Inter, sans-serif', 'Georgia, serif', 'Montserrat, sans-serif',
@@ -159,9 +166,10 @@ export const ResumePreview = () => {
       const timestamp = Date.now();
       const randomSeed = Math.floor(Math.random() * 1000000);
       
+      // Randomly select a color combination
+      const colorCombo = colorCombinations[Math.floor(Math.random() * colorCombinations.length)];
+      
       // Generate truly random indices
-      const colorIndex = Math.floor(Math.random() * darkProfessionalColors.length);
-      const accentIndex = Math.floor(Math.random() * darkAccentColors.length);
       const fontIndex = Math.floor(Math.random() * fonts.length);
       const layoutIndex = Math.floor(Math.random() * layouts.length);
       const borderIndex = Math.floor(Math.random() * borderStyles.length);
@@ -171,9 +179,9 @@ export const ResumePreview = () => {
       const newTemplate: ResumeTemplate = {
         id: `ai-generated-${timestamp}-${randomSeed}`,
         name: `AI Template ${Math.floor(Math.random() * 9999) + 1}`,
-        color: darkProfessionalColors[colorIndex],
+        color: colorCombo.heading,
         layout: layouts[layoutIndex],
-        accentColor: darkAccentColors[accentIndex],
+        accentColor: colorCombo.accent,
         font: fonts[fontIndex],
         borderStyle: borderStyles[borderIndex],
         headerLayout: headerLayouts[headerLayoutIndex],
@@ -532,11 +540,11 @@ export const ResumePreview = () => {
             </h1>
             <p 
               className="text-sm mb-3" 
-              style={{ color: templateStyles.accentColor }}
+              style={{ color: templateStyles.textColor }}
             >
               {formValues.personalDetails.bio || 'Professional Title'}
             </p>
-            <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-1 text-xs" style={{ color: templateStyles.headerColor }}>
+            <div className="contact-info grid grid-cols-1 md:grid-cols-2 gap-1 text-xs" style={{ color: templateStyles.textColor }}>
               <div>
                 <span className="font-semibold">Email:</span> {formValues.contactInformation.email || 'email@example.com'}
               </div>
@@ -562,35 +570,6 @@ export const ResumePreview = () => {
         </div>
       </header>
 
-      {/* Online Profiles */}
-      {(formValues.contactInformation.linkedin || formValues.contactInformation.github || formValues.contactInformation.portfolio) && (
-        <section className={`online-profiles ${templateStyles.sectionSpacing}`}>
-          <h2 
-            className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
-            style={{ color: templateStyles.headerColor }}
-          >
-            Online Profiles
-          </h2>
-          <div className="grid grid-cols-1 gap-1 text-xs" style={{ color: templateStyles.headerColor }}>
-            {formValues.contactInformation.linkedin && (
-              <div>
-                <span className="font-semibold">LinkedIn:</span> {formValues.contactInformation.linkedin}
-              </div>
-            )}
-            {formValues.contactInformation.github && (
-              <div>
-                <span className="font-semibold">GitHub:</span> {formValues.contactInformation.github}
-              </div>
-            )}
-            {formValues.contactInformation.portfolio && (
-              <div>
-                <span className="font-semibold">Portfolio:</span> {formValues.contactInformation.portfolio}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
       {/* Skills Section */}
       {formValues.skills.length > 0 && (
         <section className={`skills-section ${templateStyles.sectionSpacing}`}>
@@ -602,19 +581,17 @@ export const ResumePreview = () => {
           </h2>
           <div className="skills-list flex flex-wrap gap-1">
             {formValues.skills.slice(0, 12).map((skill, index) => (
-              <Badge 
+              <span 
                 key={index} 
-                className="skill-badge text-white text-xs inline-flex items-center justify-center px-2 py-1" 
+                className="skill-badge text-center px-2 py-1 text-xs inline-flex items-center justify-center" 
                 style={{ 
-                  backgroundColor: templateStyles.accentColor + '20', 
-                  color: templateStyles.accentColor,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  background: 'none',
+                  border: 'none',
+                  color: templateStyles.textColor
                 }}
               >
                 {skill}
-              </Badge>
+              </span>
             ))}
           </div>
         </section>
@@ -630,7 +607,7 @@ export const ResumePreview = () => {
             Professional Experience
           </h2>
           {formValues.experience.slice(0, 4).map((exp) => (
-            <div key={exp.id} className="experience-item mb-3" style={{ color: templateStyles.headerColor }}>
+            <div key={exp.id} className="experience-item mb-3" style={{ color: templateStyles.textColor }}>
               <div className="flex justify-between items-start mb-1">
                 <h3 
                   className="font-bold text-sm" 
@@ -668,7 +645,7 @@ export const ResumePreview = () => {
             Education
           </h2>
           {formValues.education.slice(0, 3).map((edu) => (
-            <div key={edu.id} className="education-item mb-3" style={{ color: templateStyles.headerColor }}>
+            <div key={edu.id} className="education-item mb-3" style={{ color: templateStyles.textColor }}>
               <div className="flex justify-between items-start mb-1">
                 <h3 
                   className="font-bold text-sm" 
@@ -706,7 +683,7 @@ export const ResumePreview = () => {
             Projects
           </h2>
           {formValues.projects.slice(0, 3).map((project) => (
-            <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.headerColor }}>
+            <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.textColor }}>
               <h3 
                 className="font-bold text-sm mb-1" 
                 style={{ color: templateStyles.headerColor }}
@@ -737,7 +714,7 @@ export const ResumePreview = () => {
             Certifications
           </h2>
           {formValues.certifications.slice(0, 3).map((cert) => (
-            <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.headerColor }}>
+            <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.textColor }}>
               <h3 
                 className="font-bold text-sm mb-1" 
                 style={{ color: templateStyles.headerColor }}
@@ -768,7 +745,7 @@ export const ResumePreview = () => {
         >
           Additional Information
         </h2>
-        <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.headerColor }}>
+        <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.textColor }}>
           <p className="text-xs">
             <span className="font-semibold">Date of Birth:</span> {formValues.personalDetails.dateOfBirth || 'Not specified'}
           </p>
@@ -795,7 +772,7 @@ export const ResumePreview = () => {
   const renderTwoColumnLayout = () => (
     <div className="grid grid-cols-3 gap-4">
       {/* Left Sidebar */}
-      <div className="col-span-1 space-y-4" style={{ color: templateStyles.headerColor }}>
+      <div className="col-span-1 space-y-4" style={{ color: templateStyles.textColor }}>
         {/* Profile Image */}
         {formValues.profileImageUrl && (
           <div className="profile-section text-center">
@@ -823,23 +800,6 @@ export const ResumePreview = () => {
           </div>
         </section>
 
-        {/* Online Profiles */}
-        {(formValues.contactInformation.linkedin || formValues.contactInformation.github || formValues.contactInformation.portfolio) && (
-          <section className={`online-profiles ${templateStyles.sectionSpacing}`}>
-            <h2 
-              className={`text-sm font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
-              style={{ color: templateStyles.headerColor }}
-            >
-              Online Profiles
-            </h2>
-            <div className="space-y-1 text-xs">
-              {formValues.contactInformation.linkedin && <div>LinkedIn: {formValues.contactInformation.linkedin}</div>}
-              {formValues.contactInformation.github && <div>GitHub: {formValues.contactInformation.github}</div>}
-              {formValues.contactInformation.portfolio && <div>Portfolio: {formValues.contactInformation.portfolio}</div>}
-            </div>
-          </section>
-        )}
-
         {/* Skills */}
         {formValues.skills.length > 0 && (
           <section className={`skills-section ${templateStyles.sectionSpacing}`}>
@@ -851,7 +811,7 @@ export const ResumePreview = () => {
             </h2>
             <div className="space-y-1">
               {formValues.skills.slice(0, 10).map((skill, index) => (
-                <div key={index} className="text-xs" style={{ color: templateStyles.accentColor }}>{skill}</div>
+                <div key={index} className="text-xs text-center" style={{ color: templateStyles.textColor, background: 'none', border: 'none' }}>{skill}</div>
               ))}
             </div>
           </section>
@@ -877,7 +837,7 @@ export const ResumePreview = () => {
       </div>
 
       {/* Right Main Content */}
-      <div className="col-span-2 space-y-4" style={{ color: templateStyles.headerColor }}>
+      <div className="col-span-2 space-y-4" style={{ color: templateStyles.textColor }}>
         {/* Header */}
         <header className={`resume-header ${templateStyles.borderStyle} pb-4 mb-4`}>
           <h1 
@@ -891,7 +851,7 @@ export const ResumePreview = () => {
           </h1>
           <p 
             className="text-sm mb-3" 
-            style={{ color: templateStyles.accentColor }}
+            style={{ color: templateStyles.textColor }}
           >
             {formValues.personalDetails.bio || 'Professional Title'}
           </p>
@@ -1041,7 +1001,7 @@ export const ResumePreview = () => {
   );
 
   const renderHybridLayout = () => (
-    <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
+    <div className="space-y-4" style={{ color: templateStyles.textColor }}>
       {/* Creative Header */}
       <header className={`resume-header ${templateStyles.borderStyle} pb-4 mb-4`}>
         <div className="grid grid-cols-4 gap-4 items-center">
@@ -1068,11 +1028,11 @@ export const ResumePreview = () => {
             </h1>
             <p 
               className="text-base mb-3" 
-              style={{ color: templateStyles.accentColor }}
+              style={{ color: templateStyles.textColor }}
             >
               {formValues.personalDetails.bio || 'Professional Title'}
             </p>
-            <div className="flex justify-center space-x-4 text-xs" style={{ color: templateStyles.headerColor }}>
+            <div className="flex justify-center space-x-4 text-xs" style={{ color: templateStyles.textColor }}>
               <span>{formValues.contactInformation.email || 'email@example.com'}</span>
               <span>{formValues.contactInformation.phone || '(123) 456-7890'}</span>
               <span>{formValues.personalDetails.address || '123 Street, City, State'}</span>
@@ -1092,13 +1052,13 @@ export const ResumePreview = () => {
           </h2>
           <div className="flex flex-wrap justify-center gap-2">
             {formValues.skills.slice(0, 8).map((skill, index) => (
-              <Badge 
+              <span 
                 key={index} 
-                className="skill-badge text-white text-xs py-1 px-3 inline-flex items-center justify-center" 
-                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor }}
+                className="skill-badge text-center text-xs py-1 px-3 inline-flex items-center justify-center" 
+                style={{ background: 'none', border: 'none', color: templateStyles.textColor }}
               >
                 {skill}
-              </Badge>
+              </span>
             ))}
           </div>
         </section>
@@ -1107,7 +1067,7 @@ export const ResumePreview = () => {
       {/* Two Column Content */}
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}
-        <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
+        <div className="space-y-4" style={{ color: templateStyles.textColor }}>
           {/* Experience */}
           {formValues.experience.length > 0 && formValues.experience[0].jobTitle && (
             <section className={`experience-section ${templateStyles.sectionSpacing}`}>
@@ -1174,7 +1134,7 @@ export const ResumePreview = () => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-4" style={{ color: templateStyles.headerColor }}>
+        <div className="space-y-4" style={{ color: templateStyles.textColor }}>
           {/* Education */}
           {formValues.education.length > 0 && formValues.education[0].degree && (
             <section className={`education-section ${templateStyles.sectionSpacing}`}>
@@ -1249,30 +1209,13 @@ export const ResumePreview = () => {
             >
               Preferences
             </h2>
-            <div className="space-y-1 text-xs" style={{ color: templateStyles.headerColor }}>
+            <div className="space-y-1 text-xs" style={{ color: templateStyles.textColor }}>
               <div><span className="font-semibold">Job Type:</span> {formValues.workPreferences.jobType}</div>
               <div><span className="font-semibold">Work Mode:</span> {formValues.workPreferences.workMode}</div>
               <div><span className="font-semibold">Industry:</span> {formValues.workPreferences.industry || 'Not specified'}</div>
               <div><span className="font-semibold">Salary:</span> {formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}</div>
             </div>
           </section>
-
-          {/* Online Profiles */}
-          {(formValues.contactInformation.linkedin || formValues.contactInformation.github || formValues.contactInformation.portfolio) && (
-            <section className={`online-profiles ${templateStyles.sectionSpacing}`}>
-              <h2 
-                className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
-                style={{ color: templateStyles.headerColor }}
-              >
-                Online Presence
-              </h2>
-              <div className="space-y-1 text-xs" style={{ color: templateStyles.headerColor }}>
-                {formValues.contactInformation.linkedin && <div>LinkedIn: {formValues.contactInformation.linkedin}</div>}
-                {formValues.contactInformation.github && <div>GitHub: {formValues.contactInformation.github}</div>}
-                {formValues.contactInformation.portfolio && <div>Portfolio: {formValues.contactInformation.portfolio}</div>}
-              </div>
-            </section>
-          )}
         </div>
       </div>
     </div>

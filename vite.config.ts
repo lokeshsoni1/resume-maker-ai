@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      'file-saver': path.resolve(__dirname, 'node_modules/file-saver/dist/FileSaver.min.js'),
     },
   },
   optimizeDeps: {
