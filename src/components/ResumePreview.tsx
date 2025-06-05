@@ -1,3 +1,4 @@
+
 import { useResume } from '@/contexts/ResumeContext';
 import { useTheme } from '@/contexts/ThemeContext'; 
 import { getFormattedDate, formatSalary } from '@/lib/date-utils';
@@ -8,9 +9,6 @@ import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import html2canvas from 'html2canvas';
 import { ResumeTemplate } from '@/types';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
-import { saveAs } from 'file-saver';
-import jsPDF from 'jspdf';
 
 // Import our download options component
 import { DownloadOptions } from '@/components/DownloadOptions';
@@ -94,8 +92,8 @@ export const ResumePreview = () => {
     // For AI-generated templates, use their custom properties
     if (selectedTemplate.id.startsWith('ai-generated')) {
       return {
-        headerColor: selectedTemplate.headerColor || selectedTemplate.color || '#1a202c',
-        accentColor: selectedTemplate.accentColor || selectedTemplate.secondaryColor || '#4a5568',
+        headerColor: selectedTemplate.color || '#1a202c',
+        accentColor: selectedTemplate.accentColor || '#4a5568',
         font: selectedTemplate.font || 'Roboto, sans-serif',
         layout: selectedTemplate.layout || 'single-column',
         borderStyle: selectedTemplate.borderStyle || 'border-b-2 border-gray-300',
@@ -119,17 +117,17 @@ export const ResumePreview = () => {
         description: "AI is creating a unique template just for you...",
       });
       
-      // Enhanced AI template generation with high-contrast, professional colors
-      const headerColors = [
-        '#1a202c', '#2d3748', '#1a5276', '#2b6cb0', '#4a5568',
-        '#9b2c2c', '#2c5530', '#553c9a', '#744210', '#1a365d', 
-        '#2d1b69', '#c53030', '#38a169', '#805ad5', '#d69e2e'
+      // Enhanced AI template generation with truly unique variations
+      const colors = [
+        '#1a202c', '#2d3748', '#e53e3e', '#000000', '#2b6cb0', '#1a5276',
+        '#9b2c2c', '#2c5530', '#553c9a', '#744210', '#1a365d', '#2d1b69',
+        '#c53030', '#38a169', '#805ad5', '#d69e2e', '#319795', '#dd6b20'
       ];
       
       const accentColors = [
-        '#4a5568', '#718096', '#fc8181', '#4a4a4a', '#90cdf4', 
-        '#5dade2', '#feb2b2', '#68d391', '#b794f6', '#f6ad55', 
-        '#63b3ed', '#a78bfa', '#fbb6ce', '#9ae6b4', '#fbd38d'
+        '#4a5568', '#718096', '#fc8181', '#4a4a4a', '#90cdf4', '#5dade2',
+        '#feb2b2', '#68d391', '#b794f6', '#f6ad55', '#63b3ed', '#a78bfa',
+        '#fbb6ce', '#9ae6b4', '#fbd38d', '#81e6d9', '#f687b3', '#bee3f8'
       ];
       
       const fonts = [
@@ -158,8 +156,8 @@ export const ResumePreview = () => {
       const randomSeed = Math.floor(Math.random() * 1000000);
       
       // Generate truly random indices
-      const headerColorIndex = Math.floor(Math.random() * headerColors.length);
-      const accentColorIndex = Math.floor(Math.random() * accentColors.length);
+      const colorIndex = Math.floor(Math.random() * colors.length);
+      const accentIndex = Math.floor(Math.random() * accentColors.length);
       const fontIndex = Math.floor(Math.random() * fonts.length);
       const layoutIndex = Math.floor(Math.random() * layouts.length);
       const borderIndex = Math.floor(Math.random() * borderStyles.length);
@@ -169,10 +167,9 @@ export const ResumePreview = () => {
       const newTemplate: ResumeTemplate = {
         id: `ai-generated-${timestamp}-${randomSeed}`,
         name: `AI Template ${Math.floor(Math.random() * 9999) + 1}`,
-        color: headerColors[headerColorIndex],
-        headerColor: headerColors[headerColorIndex],
-        accentColor: accentColors[accentColorIndex],
+        color: colors[colorIndex],
         layout: layouts[layoutIndex],
+        accentColor: accentColors[accentIndex],
         font: fonts[fontIndex],
         borderStyle: borderStyles[borderIndex],
         headerLayout: headerLayouts[headerLayoutIndex],
@@ -201,379 +198,9 @@ export const ResumePreview = () => {
     }
   };
 
-  // Enhanced DOCX download with proper formatting
-  const handleDownloadAsDocx = async () => {
-    try {
-      const templateStyles = getTemplateStyles();
-      
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: [
-            // Header
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: formValues.fullName || 'Your Name',
-                  bold: true,
-                  size: 32,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ],
-              heading: HeadingLevel.HEADING_1,
-              alignment: AlignmentType.CENTER
-            }),
-            
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: formValues.personalDetails.bio || 'Professional Title',
-                  size: 24,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ],
-              alignment: AlignmentType.CENTER
-            }),
-            
-            // Contact Information
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Email: ${formValues.contactInformation.email || 'email@example.com'} | Phone: ${formValues.contactInformation.phone || '(123) 456-7890'}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ],
-              alignment: AlignmentType.CENTER
-            }),
-            
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Address: ${formValues.personalDetails.address || '123 Street, City, State'}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ],
-              alignment: AlignmentType.CENTER
-            }),
-            
-            // Skills Section
-            ...(formValues.skills.length > 0 ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "SKILLS",
-                    bold: true,
-                    size: 24,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ],
-                heading: HeadingLevel.HEADING_2
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: formValues.skills.join(', '),
-                    size: 20,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ]
-              })
-            ] : []),
-            
-            // Experience Section
-            ...(formValues.experience.length > 0 && formValues.experience[0].jobTitle ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "PROFESSIONAL EXPERIENCE",
-                    bold: true,
-                    size: 24,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ],
-                heading: HeadingLevel.HEADING_2
-              }),
-              ...formValues.experience.slice(0, 4).flatMap((exp) => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${exp.jobTitle} at ${exp.company}`,
-                      bold: true,
-                      size: 22,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${getFormattedDate(exp.startDate)} - ${exp.current ? 'Present' : getFormattedDate(exp.endDate)} | ${exp.location}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: exp.description || '',
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                })
-              ])
-            ] : []),
-            
-            // Education Section
-            ...(formValues.education.length > 0 && formValues.education[0].degree ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "EDUCATION",
-                    bold: true,
-                    size: 24,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ],
-                heading: HeadingLevel.HEADING_2
-              }),
-              ...formValues.education.slice(0, 3).flatMap((edu) => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${edu.degree} - ${edu.institution}`,
-                      bold: true,
-                      size: 22,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${getFormattedDate(edu.startDate)} - ${edu.current ? 'Present' : getFormattedDate(edu.endDate)} | ${edu.location}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                ...(edu.gpa ? [new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `GPA: ${edu.gpa}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                })] : [])
-              ])
-            ] : []),
-            
-            // Projects Section
-            ...(formValues.projects.length > 0 && formValues.projects[0].title ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "PROJECTS",
-                    bold: true,
-                    size: 24,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ],
-                heading: HeadingLevel.HEADING_2
-              }),
-              ...formValues.projects.slice(0, 3).flatMap((project) => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: project.title,
-                      bold: true,
-                      size: 22,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: project.description || '',
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Technologies: ${project.technologies}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                ...(project.link ? [new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Link: ${project.link}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                })] : [])
-              ])
-            ] : []),
-            
-            // Certifications Section
-            ...(formValues.certifications.length > 0 && formValues.certifications[0].name ? [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "CERTIFICATIONS",
-                    bold: true,
-                    size: 24,
-                    font: templateStyles.font.split(',')[0]
-                  })
-                ],
-                heading: HeadingLevel.HEADING_2
-              }),
-              ...formValues.certifications.slice(0, 3).flatMap((cert) => [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: cert.name,
-                      bold: true,
-                      size: 22,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Issuer: ${cert.issuer}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Date: ${getFormattedDate(cert.date)}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                }),
-                ...(cert.link ? [new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Link: ${cert.link}`,
-                      size: 20,
-                      font: templateStyles.font.split(',')[0]
-                    })
-                  ]
-                })] : [])
-              ])
-            ] : []),
-            
-            // Additional Information
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: "ADDITIONAL INFORMATION",
-                  bold: true,
-                  size: 24,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ],
-              heading: HeadingLevel.HEADING_2
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Date of Birth: ${formValues.personalDetails.dateOfBirth || 'Not specified'}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Nationality: ${formValues.personalDetails.nationality || 'Not specified'}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Job Type: ${formValues.workPreferences.jobType}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Work Mode: ${formValues.workPreferences.workMode}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Industry: ${formValues.workPreferences.industry || 'Not specified'}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `Salary: ${formatSalary(formValues.workPreferences.salaryExpectation, formValues.workPreferences.salaryCurrency)}`,
-                  size: 20,
-                  font: templateStyles.font.split(',')[0]
-                })
-              ]
-            }),
-          ]
-        }]
-      });
-      
-      const blob = await Packer.toBlob(doc);
-      const fileName = formValues.fullName 
-        ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.docx` 
-        : `Resume-${new Date().toISOString().split('T')[0]}.docx`;
-      
-      saveAs(blob, fileName);
-      
-      toast({
-        title: "Download Complete",
-        description: "Your resume has been downloaded as an editable Word document.",
-      });
-      
-    } catch (error) {
-      console.error('Error downloading DOCX:', error);
-      toast({
-        title: "Download Failed",
-        description: "We couldn't generate your Word file. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const templateStyles = getTemplateStyles();
   
+  // Render different layouts based on template type
   const renderSingleColumnLayout = () => (
     <div className="space-y-4">
       {/* Header Section */}
@@ -661,7 +288,7 @@ export const ResumePreview = () => {
         </section>
       )}
 
-      {/* Skills Section with improved alignment */}
+      {/* Skills Section */}
       {formValues.skills.length > 0 && (
         <section className={`skills-section ${templateStyles.sectionSpacing}`}>
           <h2 
@@ -674,12 +301,8 @@ export const ResumePreview = () => {
             {formValues.skills.slice(0, 12).map((skill, index) => (
               <Badge 
                 key={index} 
-                className="skill-badge text-xs px-2 py-1 inline-flex items-center justify-center" 
-                style={{ 
-                  backgroundColor: templateStyles.accentColor + '20', 
-                  color: templateStyles.accentColor,
-                  border: `1px solid ${templateStyles.accentColor}40`
-                }}
+                className="skill-badge text-white text-xs py-1 px-2" 
+                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor }}
               >
                 {skill}
               </Badge>
@@ -751,7 +374,10 @@ export const ResumePreview = () => {
                   {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                 </span>
               </div>
-              <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
+              <p 
+                className="font-semibold text-sm mb-1" 
+                style={{ color: templateStyles.accentColor }}
+              >
                 {edu.institution}
               </p>
               <p className="text-xs mb-1">{edu.location}</p>
@@ -772,7 +398,10 @@ export const ResumePreview = () => {
           </h2>
           {formValues.projects.slice(0, 3).map((project) => (
             <div key={project.id} className="project-item mb-3" style={{ color: templateStyles.headerColor }}>
-              <h3 className="font-bold text-sm mb-1" style={{ color: templateStyles.headerColor }}>
+              <h3 
+                className="font-bold text-sm mb-1" 
+                style={{ color: templateStyles.headerColor }}
+              >
                 {project.title}
               </h3>
               <p className="text-xs mb-1 leading-relaxed">{project.description?.substring(0, 120)}...</p>
@@ -792,12 +421,18 @@ export const ResumePreview = () => {
       {/* Certifications Section */}
       {formValues.certifications.length > 0 && formValues.certifications[0].name && (
         <section className={`certifications-section ${templateStyles.sectionSpacing}`}>
-          <h2 className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`} style={{ color: templateStyles.headerColor }}>
+          <h2 
+            className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
+            style={{ color: templateStyles.headerColor }}
+          >
             Certifications
           </h2>
           {formValues.certifications.slice(0, 3).map((cert) => (
             <div key={cert.id} className="certification-item mb-3" style={{ color: templateStyles.headerColor }}>
-              <h3 className="font-bold text-sm mb-1" style={{ color: templateStyles.headerColor }}>
+              <h3 
+                className="font-bold text-sm mb-1" 
+                style={{ color: templateStyles.headerColor }}
+              >
                 {cert.name}
               </h3>
               <p className="text-xs mb-1">
@@ -818,7 +453,10 @@ export const ResumePreview = () => {
 
       {/* Additional Information */}
       <section className={`additional-info ${templateStyles.sectionSpacing}`}>
-        <h2 className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`} style={{ color: templateStyles.headerColor }}>
+        <h2 
+          className={`text-lg font-bold mb-2 uppercase tracking-wide ${templateStyles.borderStyle} pb-1`}
+          style={{ color: templateStyles.headerColor }}
+        >
           Additional Information
         </h2>
         <div className="grid grid-cols-2 gap-2" style={{ color: templateStyles.headerColor }}>
@@ -1013,7 +651,10 @@ export const ResumePreview = () => {
                     {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                   </span>
                 </div>
-                <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
+                <p 
+                  className="font-semibold text-sm mb-1" 
+                  style={{ color: templateStyles.accentColor }}
+                >
                   {edu.institution}
                 </p>
                 <p className="text-xs mb-1">{edu.location}</p>
@@ -1144,8 +785,8 @@ export const ResumePreview = () => {
             {formValues.skills.slice(0, 8).map((skill, index) => (
               <Badge 
                 key={index} 
-                className="skill-badge text-white text-xs py-1 px-3 inline-flex items-center justify-center" 
-                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor, border: `1px solid ${templateStyles.accentColor}40` }}
+                className="skill-badge text-white text-xs py-1 px-3" 
+                style={{ backgroundColor: templateStyles.accentColor + '20', color: templateStyles.accentColor }}
               >
                 {skill}
               </Badge>
@@ -1183,7 +824,10 @@ export const ResumePreview = () => {
                       {getFormattedDate(exp.startDate)} - {exp.current ? 'Present' : getFormattedDate(exp.endDate)}
                     </span>
                   </div>
-                  <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
+                  <p 
+                    className="font-semibold text-sm mb-1" 
+                    style={{ color: templateStyles.accentColor }}
+                  >
                     {exp.company}
                   </p>
                   <p className="text-xs mb-1 italic">{exp.location}</p>
@@ -1247,7 +891,10 @@ export const ResumePreview = () => {
                       {getFormattedDate(edu.startDate)} - {edu.current ? 'Present' : getFormattedDate(edu.endDate)}
                     </span>
                   </div>
-                  <p className="font-semibold text-sm mb-1" style={{ color: templateStyles.accentColor }}>
+                  <p 
+                    className="font-semibold text-sm mb-1" 
+                    style={{ color: templateStyles.accentColor }}
+                  >
                     {edu.institution}
                   </p>
                   <p className="text-xs mb-1">{edu.location}</p>
@@ -1374,7 +1021,7 @@ export const ResumePreview = () => {
           </Button>
         </div>
         
-        {/* Fixed A4 Resume Preview Container with proper padding */}
+        {/* Fixed A4 Resume Preview Container */}
         <div className="resume-container mx-auto mb-8 shadow-2xl rounded-lg overflow-hidden border border-gray-200 bg-white">
           <div 
             className={`resume-content ${getTemplateClass()}`} 
@@ -1385,7 +1032,7 @@ export const ResumePreview = () => {
               minHeight: '297mm', // Exact A4 height
               maxHeight: '297mm', // Prevent overflow
               margin: '0 auto',
-              padding: '16mm', // Added consistent padding for proper spacing
+              padding: '20mm', // Standard A4 margins
               boxSizing: 'border-box',
               fontFamily: templateStyles.font,
               fontSize: '12px',
@@ -1399,113 +1046,7 @@ export const ResumePreview = () => {
           </div>
         </div>
         
-        {/* Enhanced Download Options */}
-        <div className="flex flex-wrap justify-center gap-4 mt-8">
-          <Button
-            variant="outline"
-            onClick={async () => {
-              try {
-                const resumeContent = document.getElementById('resume-content');
-                if (!resumeContent) return;
-
-                const canvas = await html2canvas(resumeContent, {
-                  scale: 2,
-                  useCORS: true,
-                  allowTaint: true,
-                  width: 794, // A4 width at 96 DPI
-                  height: 1123, // A4 height at 96 DPI
-                  backgroundColor: '#FFFFFF',
-                });
-                
-                const imgData = canvas.toDataURL('image/png', 1.0);
-                const link = document.createElement('a');
-                const fileName = formValues.fullName 
-                  ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.png` 
-                  : `Resume-${new Date().toISOString().split('T')[0]}.png`;
-                
-                link.href = imgData;
-                link.download = fileName;
-                link.click();
-                
-                toast({
-                  title: "Download Complete",
-                  description: "Your resume has been downloaded as a PNG file.",
-                });
-              } catch (error) {
-                console.error('Error downloading PNG:', error);
-                toast({
-                  title: "Download Failed",
-                  description: "We couldn't generate your PNG file. Please try again.",
-                  variant: "destructive",
-                });
-              }
-            }}
-            className="flex items-center gap-2 hover-scale glow"
-          >
-            <Download className="h-4 w-4" />
-            Download as PNG
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={async () => {
-              try {
-                const resumeContent = document.getElementById('resume-content');
-                if (!resumeContent) {
-                  throw new Error('Resume content not found');
-                }
-                
-                const canvas = await html2canvas(resumeContent, {
-                  scale: 2,
-                  useCORS: true,
-                  allowTaint: true,
-                  backgroundColor: '#FFFFFF',
-                });
-                
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                  orientation: 'portrait',
-                  unit: 'px',
-                  format: [794, 1123] // A4 dimensions
-                });
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, 794, 1123);
-                
-                const fileName = formValues.fullName 
-                  ? `${formValues.fullName.replace(/\s+/g, '-')}-Resume.pdf` 
-                  : `Resume-${new Date().toISOString().split('T')[0]}.pdf`;
-                
-                pdf.save(fileName);
-                
-                toast({
-                  title: "Download Complete",
-                  description: "Your resume has been downloaded as a PDF file.",
-                });
-                
-              } catch (error) {
-                console.error('Error downloading PDF:', error);
-                toast({
-                  title: "Download Failed",
-                  description: "We couldn't generate your PDF file. Please try again.",
-                  variant: "destructive",
-                });
-              }
-            }}
-            className="flex items-center gap-2 hover-scale glow"
-          >
-            <Download className="h-4 w-4" />
-            Download as PDF
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={handleDownloadAsDocx}
-            className="flex items-center gap-2 hover-scale glow"
-          >
-            <Download className="h-4 w-4" />
-            Download as Word
-          </Button>
-        </div>
+        <DownloadOptions />
       </div>
     </section>
   );
