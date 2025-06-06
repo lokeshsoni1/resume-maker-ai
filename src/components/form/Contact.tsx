@@ -75,7 +75,7 @@ export const ContactForm = () => {
           {/* Add the fixed contact email for the company - read only */}
           <div className="mt-4 flex items-center p-2 bg-muted rounded">
             <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Company contact: clipsspreader001@gmail.com</span>
+            <span className="text-sm text-muted-foreground">Company contact: resumebuilderai.official@gmail.com</span>
           </div>
         </div>
         
